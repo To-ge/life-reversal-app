@@ -4,6 +4,8 @@ import Head from "next/head";
 import { useSession } from "next-auth/react";
 import Logout from "components/Logout";
 import Login from "components/Login";
+import DeleteUser from "components/DeleteUser";
+import TopBar from "components/topbar/TopBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +20,7 @@ export default function Home() {
         <title>life-reversal</title>
       </Head>
       <div>
+        <TopBar />
         <h1>Life Reversal</h1>
         {status === "authenticated" ? (
           <div>
@@ -26,6 +29,9 @@ export default function Home() {
             <img src={imageUrl} alt="" style={{ borderRadius: "50px" }} />
             <div>
               <Logout />
+            </div>
+            <div>
+              <DeleteUser />
             </div>
           </div>
         ) : (
