@@ -1,7 +1,6 @@
 import { ButtonActions } from "./ButtonActions";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import api from "utils/axios";
@@ -28,17 +27,19 @@ const SelectBar = (props: SelectBarProps) => {
     setButtonAction(e.target.innerText);
   };
 
-  const PublishArticle = async () => {
+  const publishArticle = async () => {
     try {
-      const articleRes = await api.post(`/articles`, {
+      const articleRes = await api.post("/articles", {
         user_id: session?.user?.id,
         text: comment,
       });
       console.log(articleRes);
-      const cardsRes = await api.post(`/cards`, {
-        user_id: session?.user?.id,
-        article_id: articleRes.data.id,
-        content: cardInfo,
+      const cardsRes = await api.post("/cards", {
+        article: {
+          user_id: session?.user?.id,
+          article_id: articleRes.data.id,
+          content: cardInfo,
+        },
       });
       console.log(cardsRes);
       router.push("/search");
@@ -64,7 +65,7 @@ const SelectBar = (props: SelectBarProps) => {
           <p>コメントを書いて投稿しよう</p>
           <div
             className="px-4 py-2 bg-orange-400 text-white rounded-md cursor-pointer hover:bg-red-600 hover:text-gray-200"
-            onClick={PublishArticle}
+            onClick={publishArticle}
           >
             Publish
           </div>
