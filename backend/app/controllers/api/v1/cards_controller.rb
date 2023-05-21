@@ -1,6 +1,6 @@
 class Api::V1::CardsController < ApplicationController
   def create
-    card = Card.create(card_params)
+    card = current_user.articles.cards.create(card_params)
 
     if card
       render json: card
@@ -12,8 +12,29 @@ class Api::V1::CardsController < ApplicationController
     render json: {error: e.message}, status: :internal_server_error
   end
 
+  def index
+    cards = current_user.articles.cards.all
+
+    if cards
+      render json: cards
+    end
+  rescue StandardError => eager_load_paths
+    render json: {error: e.message}
+  end
+
+  def update
+    card = current_user.articles.cards.find_by(id: params[:id])
+
+    if card
+      card.update
+    end
+
+  rescue StandardError => eager_load_paths
+    render json: {error: e.message}
+  end
+
   def destroy
-    card = Card.find_by(email: params[:email])
+    card = current_user.articles.cards.find_by(id: params[:id])
 
     if card
       card.destroy

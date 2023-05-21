@@ -3,9 +3,10 @@ Rails.application.routes.draw do
   get 'messages/create'
   namespace :api do
     namespace :v1 do
-      post 'users/create', to:'users#create'
+      post 'auth/login', to:'users#create'
+      delete 'auth/logout', to:'users#logout'
       get 'users/destroy'
-      resources :articles
+      post 'articles', to:'articles#create'
       resources :cards
     end
   end
@@ -13,7 +14,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  post 'auth/login', to: 'api/v1/users#create'
   delete 'users/:email', to: 'api/v1/users#destroy', constraints: { email: %r{[^/]+} }
   # mount ActionCable.server => '/cable'
 end

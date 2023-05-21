@@ -1,6 +1,7 @@
 import axios from "axios";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import api from "utils/axios";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -34,7 +35,7 @@ export default NextAuth({
       const name = user.name;
       const email = user.email;
       try {
-        const response = await axios.post(`${apiUrl}/auth/login`, {
+        const response = await api.post("/auth/login", {
           provider,
           uid,
           name,

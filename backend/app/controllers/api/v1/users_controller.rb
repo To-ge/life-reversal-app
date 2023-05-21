@@ -2,7 +2,9 @@ class Api::V1::UsersController < ApplicationController
   def create
     user = User.find_or_create_by(user_params)
 
-    if user
+    if user.persisted?
+      session[:user_id] = user.uid
+      puts session
       render json: user
     else
       render json: {error: "ログインに失敗しました"}, status: :unprocessable_entity
@@ -16,6 +18,7 @@ class Api::V1::UsersController < ApplicationController
     user = User.find_by(email: params[:email])
 
     if user
+      reset_session
       user.destroy
     else
       render json: {error: "ユーザーが見つかりませんでした"}, status: :not_found
@@ -23,6 +26,10 @@ class Api::V1::UsersController < ApplicationController
 
   rescue StandardError => e
     render json: {error: e.message}, status: :internal_server_error
+  end
+
+  def logout
+    reset_session
   end
 
   private

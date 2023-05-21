@@ -10,9 +10,8 @@ const Login = (): React.ReactElement | null => {
   if (status !== "authenticated") {
     return (
       <div>
-        <p>ログインしていません</p>
         <button
-          className="flex justify-center items-center shadow-lg shadow-slate-300 px-7 py-3 rounded-md space-x-5"
+          className="flex justify-center items-center bg-white shadow-lg shadow-slate-300 px-7 py-3 rounded-md space-x-5"
           onClick={() => signIn("google", { prompt: "login" })}
         >
           <Image
