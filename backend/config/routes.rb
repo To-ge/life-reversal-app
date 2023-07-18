@@ -4,10 +4,14 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post 'auth/login', to:'users#create'
+      get 'auth/user', to:'users#find_user'
       delete 'auth/logout', to:'users#logout'
-      get 'users/destroy'
-      post 'articles', to:'articles#create'
+      resources :users, only: [:index, :destroy]
+      resources :articles
       resources :cards
+      resources :follower_relationships, only: [:create, :destroy, :show]
+      post 'find_followers', to:'follower_relationships#find_followers'
+      post 'find_following_users', to:'follower_relationships#find_following_users'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

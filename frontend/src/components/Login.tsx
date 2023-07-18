@@ -12,7 +12,9 @@ const Login = (): React.ReactElement | null => {
       <div>
         <button
           className="flex justify-center items-center bg-white shadow-lg shadow-slate-300 px-7 py-3 rounded-md space-x-5"
-          onClick={() => signIn("google", { prompt: "login" })}
+          onClick={() =>
+            signIn("google", { prompt: "login", callbackUrl: "/" })
+          }
         >
           <Image
             src="https://authjs.dev/img/providers/google.svg"

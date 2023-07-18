@@ -1,27 +1,43 @@
 import { ButtonActions } from "./ButtonActions";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import api from "utils/axios";
+import { UserContext } from "provider/userProvider";
 
 type CardInfoType = {
   id: number;
   text: string;
 };
 
-type SelectBarProps = {
-  setButtonAction: React.Dispatch<React.SetStateAction<string>>;
+type SelectBar = {
+  setButtonAction?: React.Dispatch<React.SetStateAction<string>>;
   commentPanel: boolean;
-  setCommentPanel: React.Dispatch<React.SetStateAction<boolean>>;
-  cardInfo: CardInfoType[];
+  setCommentPanel?: React.Dispatch<React.SetStateAction<boolean>>;
+  cardInfo: Card[];
+  editing?: boolean;
+  article?: Article;
+  cardId?: number;
 };
 
-const SelectBar = (props: SelectBarProps) => {
-  const { setButtonAction, commentPanel, setCommentPanel, cardInfo } = props;
+const SelectBar = (props: SelectBar) => {
+  const {
+    setButtonAction,
+    commentPanel,
+    setCommentPanel,
+    cardInfo,
+    editing,
+    article,
+    cardId,
+  } = props;
   const [comment, setComment] = useState<string>("");
   const router = useRouter();
   const { data: session } = useSession<Session>();
+
+  useEffect(() => {
+    article && setComment(article.text);
+  }, []);
 
   const handleClick = (e) => {
     setButtonAction(e.target.innerText);
@@ -29,23 +45,44 @@ const SelectBar = (props: SelectBarProps) => {
 
   const publishArticle = async () => {
     try {
-      const articleRes = await api.post("/articles", {
-        user_id: session?.user?.id,
-        text: comment,
-      });
-      console.log(articleRes);
-      const cardsRes = await api.post("/cards", {
-        article: {
-          user_id: session?.user?.id,
+      console.log("作成前");
+      if (editing) {
+        const articleRes = await api.put(`/articles/${article?.id}`, {
+          text: comment,
+        });
+        console.log(articleRes);
+        const cardsRes = await api.put(`/cards/${cardId}`, {
+          content: JSON.stringify(cardInfo),
+        });
+        console.log(JSON.parse(cardsRes.data.content));
+      } else {
+        const articleRes = await api.post("/articles", {
+          email: session?.user?.email,
+          text: comment,
+        });
+        console.log(articleRes);
+        const cardsRes = await api.post("/cards", {
           article_id: articleRes.data.id,
-          content: cardInfo,
-        },
-      });
-      console.log(cardsRes);
+          content: JSON.stringify(cardInfo),
+        });
+        console.log(JSON.parse(cardsRes.data.content));
+      }
       router.push("/search");
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const inputText = (e) => {
+    // if (editing) {
+    //   setArticleInfo((prev: Article) => {
+    //     let updatedInfo: Article = prev;
+    //     updatedInfo.text = e.target.value;
+    //     return updatedInfo;
+    //   });
+    // } else {
+    setComment(e.target.value);
+    // }
   };
 
   return (
@@ -67,7 +104,7 @@ const SelectBar = (props: SelectBarProps) => {
             className="px-4 py-2 bg-orange-400 text-white rounded-md cursor-pointer hover:bg-red-600 hover:text-gray-200"
             onClick={publishArticle}
           >
-            Publish
+            {editing ? "Update" : "Publish"}
           </div>
         </div>
       )}
@@ -92,7 +129,11 @@ const SelectBar = (props: SelectBarProps) => {
               <textarea
                 className="min-h-full min-w-full text-lg p-5"
                 placeholder="Keep comment!"
-                onChange={(e) => setComment(e.target.value)}
+                onChange={(e) => inputText(e)}
+                value={
+                  // editing ? articleInfo?.text :
+                  comment
+                }
               />
             </div>
           </div>

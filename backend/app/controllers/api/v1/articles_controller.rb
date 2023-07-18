@@ -1,9 +1,10 @@
 class Api::V1::ArticlesController < ApplicationController
   def create
-    puts article_params
-    article = current_user.articles.create(article_params)
+    Rails.logger.debug "before creating"
+    user = User.find_by(email:params[:email])
+    article = user.articles.create(article_params)
 
-    if article.persisted?
+    if article
       render json: article
     else
       errors = article.errors.full_messages
@@ -15,23 +16,25 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def index
-    articles = current_user.articles.all
+    articles = Article.all
 
     if articles
       render json: articles
+    else
+      render json: {message: "記事がありません"}
     end
-  rescue StandardError => eager_load_paths
+  rescue StandardError => e
     render json: {error: e.message}
   end
 
   def update
-    article = current_user.articles.find_by(id: params[:id])
+    article = Article.find(params[:id])
 
-    if article
-      article.update
+    if article.update(article_params)
+      render json: article
     end
 
-  rescue StandardError => eager_load_paths
+  rescue StandardError => e
     render json: {error: e.message}
   end
 
@@ -51,6 +54,6 @@ class Api::V1::ArticlesController < ApplicationController
   private
 
   def article_params
-    params.require(:article).permit(:user_id, :text)
+    params.require(:article).permit(:text)
   end
 end

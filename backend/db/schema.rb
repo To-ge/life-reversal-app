@@ -10,23 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_13_145048) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_14_223738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "articles", force: :cascade do |t|
-    t.string "user_id", null: false
     t.text "text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
   create_table "cards", force: :cascade do |t|
-    t.string "user_id", null: false
-    t.string "article_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "content", default: [], array: true
+    t.bigint "article_id"
+    t.text "content", default: "[]"
+    t.index ["article_id"], name: "index_cards_on_article_id"
+  end
+
+  create_table "follower_relationships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "follower_id", null: false
+    t.bigint "following_id", null: false
+    t.index ["follower_id"], name: "index_follower_relationships_on_follower_id"
+    t.index ["following_id"], name: "index_follower_relationships_on_following_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -50,6 +60,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_13_145048) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
+    t.string "password_salt", null: false
+    t.string "password_hash", null: false
   end
 
+  add_foreign_key "articles", "users"
+  add_foreign_key "cards", "articles"
+  add_foreign_key "follower_relationships", "users", column: "follower_id"
+  add_foreign_key "follower_relationships", "users", column: "following_id"
 end

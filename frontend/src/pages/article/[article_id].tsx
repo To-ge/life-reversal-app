@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 const Article = () => {
   const router = useRouter();
-  const articleInfo = router.query;
-  console.log(router.query);
+  const articleInfo: UserAndArticle = JSON.parse(router.query.props);
+  console.log(articleInfo);
 
   return (
     <div className="h-screen w-screen fixed">

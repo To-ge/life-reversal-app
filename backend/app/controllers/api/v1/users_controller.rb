@@ -1,15 +1,43 @@
+require 'bcrypt'
+
 class Api::V1::UsersController < ApplicationController
   def create
-    user = User.find_or_create_by(user_params)
 
-    if user.persisted?
-      session[:user_id] = user.uid
-      puts session
-      render json: user
+    if User.exists?(email: params[:email])
+      user = User.find_by(email: params[:email])
+      if (not email_conflict?(user)) && BCrypt::Engine.hash_secret(params[:password], user.password_salt) == user.password_hash
+        # 認証成功の処理
+        session[:user_id] = user.id
+        render json: user
+      else
+        # ログイン失敗の処理を行う
+        render json: {error: "名前もしくはパスワードが違います"}, status: :unprocessable_entity
+      end
     else
-      render json: {error: "ログインに失敗しました"}, status: :unprocessable_entity
+      new_user = User.create(user_params)
+      if new_user.persisted?
+        render json: new_user
+      else
+        render json: {error: "ログインに失敗しました"}, status: :unprocessable_entity
+      end
     end
 
+  rescue StandardError => e
+    render json: {error: e.message}, status: :internal_server_error
+  end
+
+  def index
+    users = User.all
+
+    if users
+      render json: users
+    end
+  rescue StandardError => e
+    render json: {error: e.message}
+  end
+
+  def find_user
+    render json: current_user
   rescue StandardError => e
     render json: {error: e.message}, status: :internal_server_error
   end
@@ -35,6 +63,13 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:provider, :uid, :name, :email)
+    user_params = params.require(:user).permit(:provider, :uid, :name, :email, :image)
+    user_params[:password_salt] = BCrypt::Engine.generate_salt
+    user_params[:password_hash] = BCrypt::Engine.hash_secret(params[:password], user_params[:password_salt])
+    user_params
+  end
+
+  def email_conflict?(user)
+    params[:name] != user.name
   end
 end
