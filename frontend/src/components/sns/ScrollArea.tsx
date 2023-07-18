@@ -1,36 +1,53 @@
 import Link from "next/link";
 import PostedArticle from "./PostedArticle";
+import { useEffect, useState } from "react";
+import api from "utils/axios";
 const ScrollArea = () => {
+  const [articles, setArticles] = useState();
+  const [users, setUsers] = useState();
+
+  useEffect(() => {
+    const getArticles = async () => {
+      const response = await api.get("/articles");
+      setArticles(response.data);
+      console.log(response.data);
+    };
+    getArticles();
+    const getUsers = async () => {
+      const response = await api.get("/users");
+      setUsers(response.data);
+      console.log(response.data);
+    };
+    getUsers();
+  }, []);
+
+  const getPropsString = (props: UserAndArticle) => JSON.stringify(props);
+
   return (
-    <div className="w-3/5 h-full flex flex-col items-center">
-      <Link
-        href={{
-          pathname: "/article/1",
-          query: {
-            user: {
-              name: "newjeans",
-              email: "newjeans@gmail.com",
-            },
-            text: "私は大学生の時に独学で勉強することで目標を達成しました。そして、新卒で希望の業界に行くことができたのでその時に取り組んだことをお伝えしたいと思います。ぜひ参考にしてみてください。",
-            cards: [
-              "haerin",
-              "hanni",
-              "mingi",
-              "daniel",
-              "heyin",
-              "unchae",
-              "chaewon",
-              "yunjin",
-            ],
-          },
-        }}
-        className="flex justify-center"
-      >
-        <PostedArticle />
-      </Link>
-      <PostedArticle />
-      <PostedArticle />
-      <PostedArticle />
+    <div className="w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
+      {articles &&
+        articles.map((article: Article) => (
+          <Link
+            key={article.id}
+            href={{
+              pathname: `/article/${article.id}`,
+              query: {
+                props: getPropsString({
+                  user: users?.find(
+                    (user: User) => user.id === article.user_id
+                  ),
+                  article,
+                }),
+              },
+            }}
+            className="flex justify-center w-full"
+          >
+            <PostedArticle
+              article={article}
+              user={users?.find((user: User) => user.id === article.user_id)}
+            />
+          </Link>
+        ))}
     </div>
   );
 };

@@ -10,7 +10,7 @@ type TreeViewProps = {
   setCardInfo: React.Dispatch<React.SetStateAction<Array<{}>>>;
 };
 
-const TreeView = (props: TreeViewProps) => {
+const TreeView = (props: TreeViewProps | UserAndArticle) => {
   const { cardInfo, setCardInfo } = props;
   // const [holdInfo, setHoldInfo] = useState<CardInfoType[] | []>([]);
 

@@ -1,19 +1,45 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Logout from "components/Logout";
 import Login from "components/Login";
 import DeleteUser from "components/DeleteUser";
 import TopBar from "components/topbar/TopBar";
-
-const inter = Inter({ subsets: ["latin"] });
-
-const DEFAULT_IMAGE_IMG = "frontend/public/default-user.jpg";
+import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const imageUrl = session?.user?.image || DEFAULT_IMAGE_IMG;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  console.log(session?.user);
+
+  const onSubmit = async (e) => {
+    e.preventDefault;
+    try {
+      const res = await signIn("credentials", {
+        name,
+        email,
+        password,
+      });
+      console.log(res);
+      toast.success("ログインしました");
+    } catch (e) {
+      toast.error("入力に誤りがありました");
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -58,12 +84,68 @@ export default function Home() {
             </h1>
           </div>
           <div className="h-1/2 w-full flex justify-center">
-            <p className="text-4xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
-              失敗を経験している人へ、これからの人生設計の手助けをします
-            </p>
+            {status === "authenticated" ? (
+              <p className="text-4xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
+                失敗を経験している人へ、これからの人生設計の手助けをします
+              </p>
+            ) : (
+              <div className="bg-white p-10 rounded-md w-1/3 mb-5">
+                <div className="flex items-center justify-between">
+                  <h1 className="text-2xl font-bold">ログインフォーム</h1>
+                </div>
+                <form
+                  className="flex flex-col justify-around h-full pb-5"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  <div className="flex flex-col space-y-2">
+                    <label htmlFor="name">名前:</label>
+                    <input
+                      className="px-3 py-2 leading-10 border border-slate-300 border-solid border-2 text-xl outline-none"
+                      {...register("name", { required: true })}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    {errors.name && <span>名前を入力してください。</span>}
+                  </div>
+                  <div className="flex flex-col space-y-2">
+                    <label htmlFor="email">メールアドレス:</label>
+                    <input
+                      className="px-3 py-2 leading-10 border border-slate-300 border-solid border-2 text-xl outline-none"
+                      {...register("email", {
+                        required: true,
+                        pattern: /^\S+@\S+$/i,
+                      })}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {errors.email && (
+                      <span>有効なメールアドレスを入力してください。</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col space-y-2">
+                    <label htmlFor="password">パスワード:</label>
+                    <input
+                      className="px-3 py-2 leading-10 border border-slate-300 border-solid border-2 text-xl outline-none"
+                      {...register("password", {
+                        required: true,
+                      })}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {errors.password && (
+                      <span>パスワードを入力してください。</span>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-teal-500 rounded-sm"
+                  >
+                    ログイン
+                  </button>
+                </form>
+                <ToastContainer />
+              </div>
+            )}
           </div>
           <div className="h-1/4 w-full flex justify-center items-start z-30">
-            <Login />
+            {status === "unauthenticated" && <Login />}
           </div>
         </div>
       </div>

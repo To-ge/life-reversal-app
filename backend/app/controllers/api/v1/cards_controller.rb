@@ -1,8 +1,9 @@
 class Api::V1::CardsController < ApplicationController
   def create
-    card = current_user.articles.cards.create(card_params)
+    article = Article.find_by(id: params[:article_id])
+    card = article.cards.create(card_params)
 
-    if card
+    if card.persisted?
       render json: card
     else
       render json: {error: "投稿に失敗しました"}, status: :unprocessable_entity
@@ -12,32 +13,36 @@ class Api::V1::CardsController < ApplicationController
     render json: {error: e.message}, status: :internal_server_error
   end
 
-  def index
-    cards = current_user.articles.cards.all
+  def show
+    article = Article.find_by(id: params[:id])
+    cards = article.cards
 
     if cards
       render json: cards
+    else
+      render json: {message: "カードがありません"}
     end
-  rescue StandardError => eager_load_paths
+  rescue StandardError => e
     render json: {error: e.message}
   end
 
   def update
-    card = current_user.articles.cards.find_by(id: params[:id])
+    cards = Card.find(params[:id])
 
-    if card
-      card.update
+    if cards.update(card_params)
+      render json: cards
     end
 
-  rescue StandardError => eager_load_paths
+  rescue StandardError => e
     render json: {error: e.message}
   end
 
   def destroy
-    card = current_user.articles.cards.find_by(id: params[:id])
+    article = Article.find_by(id: params[:id])
+    cards = article.cards.find_by(id: params[:id])
 
-    if card
-      card.destroy
+    if cards
+      cards.destroy
     else
       render json: {error: "投稿記事が見つかりませんでした"}, status: :not_found
     end
@@ -49,6 +54,6 @@ class Api::V1::CardsController < ApplicationController
   private
 
   def card_params
-    params.require(:card).permit(:user_id, :article_id, :content)
+    params.require(:card).permit(:content)
   end
 end
