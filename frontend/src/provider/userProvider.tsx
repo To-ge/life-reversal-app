@@ -4,18 +4,31 @@ const UserContext = createContext(undefined);
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [partner, setPartner] = useState<User | null>(null);
 
-  const login = (userData: User) => {
-    localStorage.setItem("user", JSON.stringify(userData));
-    setCurrentUser(userData);
+  const login = (user: User) => {
+    setCurrentUser(user);
   };
 
   const logout = () => {
     setCurrentUser(null);
   };
 
+  const displayChat = (followingUser: User) => {
+    window.localStorage.setItem("chat_partner", JSON.stringify(followingUser));
+    setPartner(followingUser);
+  };
+
   return (
-    <UserContext.Provider value={{ currentUser, login, logout }}>
+    <UserContext.Provider
+      value={{
+        currentUser,
+        partner,
+        displayChat,
+        login,
+        logout,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

@@ -9,7 +9,9 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :destroy]
       resources :articles
       resources :cards
+      resources :messages
       resources :follower_relationships, only: [:create, :destroy, :show]
+      post 'all_messages', to:'messages#find_all'
       post 'find_followers', to:'follower_relationships#find_followers'
       post 'find_following_users', to:'follower_relationships#find_following_users'
     end
@@ -18,6 +20,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  delete 'users/:email', to: 'api/v1/users#destroy', constraints: { email: %r{[^/]+} }
-  # mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
 end

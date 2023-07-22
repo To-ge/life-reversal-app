@@ -12,6 +12,7 @@ const Logout = () => {
       logout();
     } else {
       signOut();
+      localStorage.removeItem("chat_partner");
       await api.delete("/auth/logout");
     }
   };

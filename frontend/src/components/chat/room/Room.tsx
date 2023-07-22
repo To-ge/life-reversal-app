@@ -1,140 +1,159 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { createConsumer } from "@rails/actioncable";
 import { useSession } from "next-auth/react";
+import { UserContext } from "provider/userProvider";
+import api from "utils/axios";
+import { getAllMessages } from "utils/chat";
+import { ActionCableContext } from "provider/ActionCableProvider";
+import { ToastContainer, toast } from "react-toastify";
+import { scrollDown } from "assets/scrollDown";
 
 type RoomProps = {
   color: string;
   title: string;
 };
 
-const URL = "ws://losalhost:3000/cable";
-
 export default function Room(props: RoomProps) {
   const { color, title } = props;
   const { data: session } = useSession();
-  const [cableApp, setCableApp] = useState({});
   const [channel, setChannel] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[] | []>([]);
   const [inputMessage, setInputMessage] = useState("");
   const channelRef = useRef<any>(null);
-  const cableRef = useRef<any>(null);
+  const cable = useContext(ActionCableContext);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      console.log(localStorage.getItem("chat_partner"));
+  const { partner } = useContext(UserContext);
+  const chatContainer = useRef(null);
 
-      if (event.key === "chat_partner") {
-        console.log(event);
-        const newChatPartner: User | null = JSON.parse(
-          localStorage.getItem("chat_partner")
-        );
-        setChatPartner(newChatPartner);
+  useEffect(() => {
+    const newChatPartner: User | null = JSON.parse(
+      localStorage.getItem("chat_partner")
+    );
+    console.log(newChatPartner);
+    setChatPartner(newChatPartner);
+  }, [partner]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const res = await getAllMessages({
+          email: session?.user?.email,
+          other_id: chatPartner?.id,
+        });
+        setMessages(res);
+      } catch (e) {
+        console.log(e);
       }
     };
+    getMessages();
+  }, [chatPartner]);
 
-    window.addEventListener("storage", () => handleStorageChange(e));
+  const handleSendMessage = async () => {
+    if (inputMessage === "") return;
+    try {
+      const res = await api.post("messages", {
+        email: session?.user?.email,
+        other_id: chatPartner?.id,
+        content: inputMessage,
+      });
+      if (!res.data.error) {
+        setInputMessage("");
+        setMessages(() => [...messages, res.data]);
+      } else {
+        toast.error(res.data.error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    scrollDown(chatContainer);
+  }, [messages]);
+
+  useEffect(() => {
+    if (!channel && cable && chatPartner) {
+      const chnl = cable.subscriptions.create(
+        {
+          channel: `${session?.user?.name}_${chatPartner.name}`,
+        },
+        {
+          connected: () => {
+            console.log("RoomsChannel connected!");
+          },
+          disconnected: () => {
+            console.log("RoomsChannel disconnected!");
+          },
+          received: (data) => {
+            console.log(data);
+          },
+        }
+      );
+
+      setChannel(chnl);
+    }
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
+      if (cable) {
+        cable.disconnect();
+      }
     };
-  }, []);
-
-  // useEffect(() => {
-  //   if (session?.user) {
-  //     const consumer = createConsumer(URL);
-  //     console.log(consumer);
-  //     setCable(consumer);
-  //   }
-  // }, [session]);
-  // const loadConsumer = async () => {
-  //   const { createConsumer } = await import("@rails/actioncable");
-  //   return createConsumer;
-  // };
-  // useEffect(() => {
-  //   if (typeof window !== "undefined" && session?.user) {
-  //     loadConsumer().then((createConsumer) => {
-  //       setCableApp({
-  //         cable: createConsumer(URL),
-  //       });
-  //     });
-  //   }
-  // }, [session, window]);
-
-  // useEffect(() => {
-  //   const initWebSocket = async () => {
-  //     // if (!cable) return;
-  //     const consumer = createConsumer(URL);
-  //     console.log(consumer);
-  //     // setCable(consumer);
-  //     const connectedChannel = consumer.subscriptions.create(
-  //       {
-  //         channel: "ChatChannel",
-  //         chat_id: "hoge",
-  //       },
-  //       {
-  //         connected: () => {
-  //           console.log("RoomsChannel connected!");
-  //         },
-  //         disconnected: () => {
-  //           console.log("RoomsChannel disconnected!");
-  //         },
-  //       }
-  //     );
-  //     initWebSocket();
-  //     console.log(connectedChannel);
-
-  //     setChannel(connectedChannel);
-  //   };
-  // }, [session]);
-  // const socket = io("ws://localhost:3000/cable");
-
-  // useEffect(() => {
-  //   socket.on("room_channel", (message) => {
-  //     console.log(message);
-  //     setMessages((messages) => [...messages, message]);
-  //   });
-  // }, []);
-
-  // const handleSendMessage = (e) => {
-  //   e.preventDefault();
-  //   socket.emit("room_channel", { content: inputMessage });
-  //   setInputMessage("");
-  // };
+  }, [chatPartner, cable]);
 
   return (
-    <div className={`${color} h-full flex flex-col items-center pb-40`}>
+    <div className={`${color} h-screen flex flex-col items-center pb-40`}>
       <h1 className="h-12 flex justify-center items-center text-white text-lg">
-        To : {title}
+        To : {chatPartner?.name}
       </h1>
-      <div className="w-full h-4/5 flex flex-col items-end">
-        {/* {messages.map((message) => (
-          <div key={message.id}>
-            <p>{message.content}</p>
-          </div>
-        ))} */}
-        <div className="bg-lime-400 rounded-2xl w-fit px-7 py-3 text-lg font-medium mx-5 my-1 shadow-md shadow-gray-300">
-          <p>Hello World!</p>
-        </div>
-        <div className="bg-lime-400 rounded-2xl w-fit px-7 py-3 text-lg font-medium mx-5 my-1">
-          <p>Hello World!</p>
+      <div className="overflow-hidden h-4/5 w-full">
+        <div
+          ref={chatContainer}
+          id="room"
+          className="w-full max-h-full flex flex-col space-y-5 overflow-y-auto"
+        >
+          {messages &&
+            messages.length >= 1 &&
+            messages?.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${
+                  message.user_id !== chatPartner?.id
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
+              >
+                <div
+                  className={`${
+                    message.user_id !== chatPartner?.id
+                      ? "bg-lime-400"
+                      : "bg-slate-300"
+                  } rounded-2xl w-fit px-7 py-3 text-lg font-medium mx-20 my-1 shadow-md shadow-gray-300`}
+                >
+                  <p>{message.content}</p>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
-      <div className="w-3/5 flex">
+
+      <div className="w-3/5 flex bottom-8 mx-auto">
         <input
           type="text"
           className="flex-grow px-5 py-4 rounded-l-md border border-gray-300 focus:outline-none focus:border-teal-500 text-lg leading-5 text-xl"
           value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
           placeholder="コメントを入力"
           // onChange={(e) => setInputMessage(e.target.value)}
         />
         <button
           className="bg-teal-500 hover:bg-teal-600 text-white rounded-r-md px-4 py-2"
-          // onClick={(e) => handleSendMessage(e)}
+          onClick={handleSendMessage}
         >
           送信
         </button>
       </div>
+      <ToastContainer />
     </div>
   );
 }

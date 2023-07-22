@@ -2,7 +2,8 @@ import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { UserContext } from "provider/userProvider";
+import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { findFollowingUsers } from "utils/follow";
@@ -19,6 +20,7 @@ const SideBar = (props: SideBarProps) => {
   const { width, color, title } = props;
   const { data: session } = useSession<Session | null>();
   const [followingUsers, setFollowingUsers] = useState([]);
+  const { displayChat } = useContext(UserContext);
 
   useEffect(() => {
     const getFollowingUser = async () => {
@@ -31,10 +33,6 @@ const SideBar = (props: SideBarProps) => {
     };
     getFollowingUser();
   }, []);
-
-  const displayChat = (followingUser: User) => {
-    localStorage.setItem("chat_partner", JSON.stringify(followingUser));
-  };
 
   return (
     <aside className={`${width} ${color} h-screen overflow-hidden`}>
@@ -66,36 +64,6 @@ const SideBar = (props: SideBarProps) => {
               </li>
             );
           })}
-        {/* <li className="flex rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 justify-center">
-          <Link
-            href={"#"}
-            className="flex items-center p-2 text-gray-900  w-4/5 overflow-hidden"
-          >
-            <Image
-              src={imageUrl}
-              alt=""
-              width={30}
-              height={30}
-              className="mr-3"
-            />
-            <h2 className="text-lg">aespa</h2>
-          </Link>
-        </li>
-        <li className="flex rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 justify-center">
-          <Link
-            href={"#"}
-            className="flex items-center p-2 text-gray-900  w-4/5 overflow-hidden"
-          >
-            <Image
-              src={imageUrl}
-              alt=""
-              width={30}
-              height={30}
-              className="mr-3"
-            />
-            <h2 className="text-lg">Le Serafim</h2>
-          </Link>
-        </li> */}
       </ul>
       <ToastContainer />
     </aside>

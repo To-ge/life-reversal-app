@@ -66,8 +66,10 @@ class Api::V1::FollowerRelationshipsController < ApplicationController
 
   private
   def follow_ok?(user,followed_user)
+    name = "#{user.name}_#{followed_user.name}"
     ActiveRecord::Base.transaction do
       FollowerRelationship.create(following_id: followed_user.id, follower_id: user.id)
+      Room.create(name: name)
       # user.following_users.create(following_id: followed_user.id)
       # followed_user.followers.create(follower_id: user.id)
     end
