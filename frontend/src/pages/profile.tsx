@@ -25,12 +25,10 @@ const Profile = () => {
           email: session?.user?.email,
         });
         setFollowers(followerRes);
-        console.log(followerRes);
         const followingUserRes = await findFollowingUsers({
           email: session?.user?.email,
         });
         setFollowingUsers(followingUserRes);
-        console.log(followingUserRes);
       } catch (e) {
         console.log(e);
       }

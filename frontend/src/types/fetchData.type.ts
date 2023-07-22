@@ -35,3 +35,15 @@ type FollowUser = {
   followed_id?: number;
   following_id?: number;
 };
+
+type Message = {
+  id?: number;
+  content: string;
+};
+
+type FetchMessage = {
+  email: string;
+  other_id: number;
+};
+
+type SendMessage = Message & FetchMessage;

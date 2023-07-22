@@ -1,6 +1,6 @@
 class RoomsChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "room_#{params['room_id']}_channel"
+    stream_from "#{params[channel]}"
     #{params['room_id']}
     # messages = Message.all
     # ActionCable.server.broadcast "room_channel", { message: messages }
@@ -8,7 +8,7 @@ class RoomsChannel < ApplicationCable::Channel
   end
 
   def broadcast_message
-    channel = "chat_channel_#{params[:chat_id]}"
+    channel = "#{params[:channel]}"
     ActionCable.server.broadcast channel, message: 'ブロードキャストしています。'
   end
 

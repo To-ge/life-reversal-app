@@ -21,7 +21,7 @@ const TopBar = () => {
 
   const imageUrl = session?.user?.image || DEFAULT_IMAGE_IMG;
   return (
-    <div className="bg-teal-600 flex items-center py-3 z-50">
+    <div className="bg-teal-600 flex items-center z-50 h-28">
       <div className="text-2xl font-bold w-1/5 flex justify-center items-center bg-gradient-to-b from-gray-200 to-gray-500 cursor-pointer h-full">
         <Link href="/">Life Reversal</Link>
       </div>
