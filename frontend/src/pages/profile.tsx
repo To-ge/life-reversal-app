@@ -16,8 +16,8 @@ const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
 const Profile = () => {
   const { data: session } = useSession();
-  const [followers, setFollowers] = useState([]);
-  const [followingUsers, setFollowingUsers] = useState([]);
+  const [followers, setFollowers] = useState<User[] | []>([]);
+  const [followingUsers, setFollowingUsers] = useState<User[] | []>([]);
 
   useEffect(() => {
     const getFollowersAndFollowingUser = async () => {

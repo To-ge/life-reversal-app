@@ -21,12 +21,12 @@ export default function Room(props: RoomProps) {
   const channelRef = useRef<any>(null);
   const { cable } = useContext(ActionCableContext);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
-  const { partner } = useContext(UserContext);
+  const { partner } = useContext<UserProvider>(UserContext);
   const chatContainer = useRef(null);
 
   useEffect(() => {
     const newChatPartner: User | null = JSON.parse(
-      localStorage.getItem("chat_partner")
+      localStorage.getItem("chat_partner") || ""
     );
     setChatPartner(newChatPartner);
   }, [partner]);
@@ -35,8 +35,8 @@ export default function Room(props: RoomProps) {
     const getMessages = async () => {
       try {
         const res = await getAllMessages({
-          email: session?.user?.email,
-          other_id: chatPartner?.id,
+          email: session?.user?.email || "",
+          other_id: chatPartner?.id || 0,
         });
         setMessages(res);
       } catch (e) {
@@ -84,8 +84,8 @@ export default function Room(props: RoomProps) {
           disconnected: () => {
             console.log("RoomsChannel disconnected!");
           },
-          received: (data) => {
-            console.log("Received message:", data);
+          received: (data: { message: string }) => {
+            console.log("Received message:", data.message);
           },
         }
       );

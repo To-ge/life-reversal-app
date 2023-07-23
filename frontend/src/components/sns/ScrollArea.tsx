@@ -16,7 +16,7 @@ const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
 const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   const [panel, setPanel] = useState(false);
-  const [panelUser, setPanelUser] = useState<User | null>(null);
+  const [panelUser, setPanelUser] = useState<User | undefined>(undefined);
   const [filterdArticles, setFilteredArticles] = useState<Article[] | []>(
     articles
   );
@@ -83,10 +83,11 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
               />
               <p>
                 登録日:
-                {new Date(panelUser?.created_at).toLocaleString("ja-JP", {
-                  timeZone: "Asia/Tokyo",
-                  dateStyle: "short",
-                })}
+                {panelUser &&
+                  new Date(panelUser?.created_at).toLocaleString("ja-JP", {
+                    timeZone: "Asia/Tokyo",
+                    dateStyle: "short",
+                  })}
               </p>
               <p className="text-xl text-orange-400 mb-3">
                 名前: {panelUser?.name}
@@ -109,22 +110,23 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
                       (user: User) => user.id === article.user_id
                     ),
                     article,
-                  }),
+                  } as UserAndArticle),
                 },
               }}
               className="flex justify-center w-full"
             >
               <div
-                id={article.user_id}
+                id={String(article.user_id)}
                 onMouseEnter={(e) => displayInfo(e)}
                 onMouseLeave={() => setPanel(false)}
                 className="w-full"
               >
                 <PostedArticle
                   article={article}
-                  user={users?.find(
-                    (user: User) => user.id === article.user_id
-                  )}
+                  user={
+                    users &&
+                    users?.find((user: User) => user.id === article.user_id)
+                  }
                 />
               </div>
             </Link>

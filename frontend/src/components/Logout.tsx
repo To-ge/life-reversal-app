@@ -5,7 +5,7 @@ import api from "utils/axios";
 
 const Logout = () => {
   const { data: session, status } = useSession();
-  const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout } = useContext<UserProvider>(UserContext);
 
   const handleLogout = async () => {
     if (currentUser) {

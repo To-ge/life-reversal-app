@@ -1,8 +1,8 @@
 import { createContext, useState } from "react";
 
-const UserContext = createContext(undefined);
+const UserContext = createContext<UserProvider | null>(null);
 
-const UserProvider = ({ children }) => {
+const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [partner, setPartner] = useState<User | null>(null);
 
