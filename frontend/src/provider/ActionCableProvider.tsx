@@ -1,11 +1,16 @@
 import { createContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { Consumer } from "@rails/actioncable";
 
-const ActionCableContext = createContext();
+const ActionCableContext = createContext<{ cable: Consumer | null }>({
+  cable: null,
+});
 
-const ActionCableProvider = ({ children }) => {
+const ActionCableProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
-  const [cableApp, setCableApp] = useState({ cable: null });
+  const [cableApp, setCableApp] = useState<{ cable: Consumer | null }>({
+    cable: null,
+  });
 
   const loadConsumer = async () => {
     const { createConsumer } = await import("@rails/actioncable");

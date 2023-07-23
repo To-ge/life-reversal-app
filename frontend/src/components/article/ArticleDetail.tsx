@@ -97,7 +97,7 @@ const ArticleDetail = (props: PropsType) => {
               <div>
                 <button
                   className="bg-black text-white rounded-full px-5 py-2 hover:text-gray-400"
-                  onClick={(e) => clickButton(e.target.innerText)}
+                  onClick={(e) => clickButton(e.currentTarget.innerText)}
                 >
                   {user.email !== session?.user?.email ? "Follow" : "Edit"}
                 </button>
