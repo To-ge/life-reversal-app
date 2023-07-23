@@ -24,6 +24,10 @@ interface UserAndArticle {
   user: User;
   article: Article;
 }
+interface UsersAndArticles {
+  users: User[];
+  articles: Article[];
+}
 
 type Card = {
   id: number;

@@ -9,25 +9,29 @@ const ActionCableProvider = ({ children }) => {
 
   const loadConsumer = async () => {
     const { createConsumer } = await import("@rails/actioncable");
-    return createConsumer;
+    return createConsumer(`${process.env.NEXT_PUBLIC_API_WS_URL}/cable`);
   };
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      session?.user &&
-      cableApp.cable === undefined
-    ) {
-      loadConsumer().then((createConsumer) => {
-        setCableApp({
-          cable: createConsumer(`${process.env.NEXT_PUBLIC_API_WS_URL}/cable`),
-        });
-      });
-    }
+    const fetchConsumer = async () => {
+      if (
+        typeof window !== "undefined" &&
+        session?.user &&
+        cableApp.cable === null
+      ) {
+        const consumer = await loadConsumer();
+        setCableApp({ cable: consumer });
+        // loadConsumer().then((createConsumer) => {
+        //   setCableApp({
+        //     // cable: createConsumer(`${process.env.NEXT_PUBLIC_API_WS_URL}/cable`),
+        //   });
+      }
+    };
+    fetchConsumer();
   }, [session]);
 
   return (
-    <ActionCableContext.Provider value={cableApp.cable}>
+    <ActionCableContext.Provider value={{ cable: cableApp.cable }}>
       {children}
     </ActionCableContext.Provider>
   );

@@ -3,31 +3,41 @@ import PostedArticle from "./PostedArticle";
 import { useCallback, useEffect, useState } from "react";
 import api from "utils/axios";
 import Image from "next/image";
+import {
+  GetServerSideProps,
+  GetStaticProps,
+  InferGetServerSidePropsType,
+} from "next";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import Article from "pages/article/[article_id]";
 
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
-const ScrollArea = () => {
-  const [articles, setArticles] = useState();
-  const [users, setUsers] = useState([]);
+const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   const [panel, setPanel] = useState(false);
   const [panelUser, setPanelUser] = useState<User | null>(null);
+  const [filterdArticles, setFilteredArticles] = useState<Article[] | []>(
+    articles
+  );
   const [postVol, setPostVol] = useState<number>(0);
-
-  useEffect(() => {
-    const getArticlesAndUsers = async () => {
-      try {
-        const articleResponse = await api.get("/articles");
-        setArticles(articleResponse.data);
-        const userResponse = await api.get("/users");
-        setUsers(userResponse.data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getArticlesAndUsers();
-  }, []);
+  const { data: session } = useSession<Session>();
 
   const getPropsString = (props: UserAndArticle) => JSON.stringify(props);
+
+  const userInfo: User | undefined = users.find(
+    (user) => user.email === session?.user?.email
+  );
+
+  const filterArticle = (action: string) => {
+    if (action === "My Articles") {
+      setFilteredArticles(
+        articles.filter((article) => article.user_id === userInfo?.id)
+      );
+    } else {
+      setFilteredArticles(articles);
+    }
+  };
 
   const displayInfo = useCallback(
     (e) => {
@@ -39,25 +49,27 @@ const ScrollArea = () => {
         articles?.filter((article: Article) => article.user_id === hoverUserId)
           .length
       );
-      console.log(panelUser);
       setPanel(true);
     },
     [users]
   );
 
   return (
-    <div className="flex">
+    <div className="flex w-screen">
       <div className="w-1/4 p-5 h-screen">
         <div className="flex justify-center">
-          <p className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400">
+          <div
+            onClick={(e) => filterArticle(e.target.innerText)}
+            className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
+          >
             My Articles
-          </p>
-          <p className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400">
+          </div>
+          <div
+            onClick={(e) => filterArticle(e.target.innerText)}
+            className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
+          >
             All Articles
-          </p>
-          <p className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400">
-            Following
-          </p>
+          </div>
         </div>
         <div className="h-2/3 flex items-center justify-center">
           {panel && (
@@ -85,13 +97,10 @@ const ScrollArea = () => {
         </div>
       </div>
       <div className="w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
-        {articles &&
-          articles.map((article: Article) => (
+        {filterdArticles &&
+          filterdArticles.map((article: Article) => (
             <Link
               key={article.id}
-              id={article.user_id}
-              onMouseEnter={(e) => displayInfo(e)}
-              onMouseLeave={() => setPanel(false)}
               href={{
                 pathname: `/article/${article.id}`,
                 query: {
@@ -105,10 +114,19 @@ const ScrollArea = () => {
               }}
               className="flex justify-center w-full"
             >
-              <PostedArticle
-                article={article}
-                user={users?.find((user: User) => user.id === article.user_id)}
-              />
+              <div
+                id={article.user_id}
+                onMouseEnter={(e) => displayInfo(e)}
+                onMouseLeave={() => setPanel(false)}
+                className="w-full"
+              >
+                <PostedArticle
+                  article={article}
+                  user={users?.find(
+                    (user: User) => user.id === article.user_id
+                  )}
+                />
+              </div>
             </Link>
           ))}
       </div>

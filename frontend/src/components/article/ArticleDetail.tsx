@@ -4,11 +4,10 @@ import Image from "next/image";
 import { UserContext } from "provider/userProvider";
 import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { json } from "stream/consumers";
-import { toEditorSettings } from "typescript";
 import api from "utils/axios";
 import { followUser } from "utils/follow";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
@@ -22,9 +21,8 @@ const ArticleDetail = (props: PropsType) => {
   const [cards, setCards] = useState();
   const { data: session, status } = useSession();
   const [editing, setEditing] = useState(false);
-  const [buttonAction, setButtonAction] = useState(null);
-  const [commentPanel, setCommentPanel] = useState<boolean>(false);
   const [cardId, setCardId] = useState<number | undefined>();
+  const router = useRouter();
 
   useEffect(() => {
     article && console.log(article);
@@ -63,6 +61,20 @@ const ArticleDetail = (props: PropsType) => {
     }
   };
 
+  const deleteArticle = async () => {
+    try {
+      const res = await api.delete(`/articles/${article.id}`);
+      if (res.data.message) {
+        toast.success(res.data.message);
+        router.push("/search");
+      } else {
+        toast.error(res.data.error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className="w-full bg-gradient-to-b from-orange-300 to-red-300 flex justify-center">
       {!editing ? (
@@ -89,6 +101,14 @@ const ArticleDetail = (props: PropsType) => {
                 >
                   {user.email !== session?.user?.email ? "Follow" : "Edit"}
                 </button>
+                {user.email === session?.user?.email && (
+                  <button
+                    className="bg-red-500 text-white rounded-full px-3 py-2 ml-3 hover:text-gray-400"
+                    onClick={deleteArticle}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
             <div className="h-2/3">

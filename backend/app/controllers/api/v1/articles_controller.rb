@@ -17,6 +17,8 @@ class Api::V1::ArticlesController < ApplicationController
 
   def index
     articles = Article.all
+    puts '🚀'
+    puts @current_user
 
     if articles
       render json: articles
@@ -39,10 +41,15 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def destroy
-    article = current_user.articles.find_by(id: params[:id])
+    article = Article.find(params[:id])
+    card = article.cards.first
 
-    if article
-      article.destroy
+    if article && card
+      if remove_article_card(article, card)
+        render json: {message: "投稿記事を削除しました"}
+      else
+        render json: {error: "投稿記事の削除に失敗しました"}
+      end
     else
       render json: {error: "投稿記事が見つかりませんでした"}, status: :not_found
     end
@@ -55,5 +62,12 @@ class Api::V1::ArticlesController < ApplicationController
 
   def article_params
     params.require(:article).permit(:text)
+  end
+
+  def remove_article_card(article, card)
+    ActiveRecord::Base.transaction do
+      card.destroy
+      article.destroy
+    end
   end
 end

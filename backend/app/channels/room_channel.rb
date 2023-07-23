@@ -1,6 +1,7 @@
 class RoomsChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "#{params[channel]}"
+    stream_from "#{params[:channel]}"
+    puts '🚀🚀🚀'
     #{params['room_id']}
     # messages = Message.all
     # ActionCable.server.broadcast "room_channel", { message: messages }
@@ -16,10 +17,12 @@ class RoomsChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def receive(data)
-    # 受信したデータを保存
-    message = Message.create(content: data['message'], user_id: current_user.id, room_id: params['room_id'])
+  def received(data)
+    # # 受信したデータを保存
+    # message = Message.create(content: data['message'], user_id: current_user.id, room_id: params['room_id'])
     # 他のユーザーにメッセージを送信
-    ActionCable.server.broadcast("room_#{params['room_id']}_channel", message: message.content, username: current_user.username)
+    ActionCable.server.broadcast("#{params[:channel]}",{message: 'ブロードキャストしています'}
+      # , message: message.content, username: current_user.username
+    )
   end
 end

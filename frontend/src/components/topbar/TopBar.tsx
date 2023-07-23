@@ -42,7 +42,7 @@ const TopBar = () => {
             <Link href={"/profile"}>
               <Image
                 src={imageUrl}
-                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0"
+                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 cursor-pointer"
                 width={50}
                 height={50}
                 alt="Picture of the author"

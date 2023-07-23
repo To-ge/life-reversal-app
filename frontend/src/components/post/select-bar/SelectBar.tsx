@@ -44,6 +44,7 @@ const SelectBar = (props: SelectBar) => {
   };
 
   const publishArticle = async () => {
+    if (comment === "") return;
     try {
       console.log("作成前");
       if (editing) {
@@ -128,7 +129,7 @@ const SelectBar = (props: SelectBar) => {
             <div className="w-5/6 h-4/5 bg-white">
               <textarea
                 className="min-h-full min-w-full text-lg p-5"
-                placeholder="Keep comment!"
+                placeholder="コメント欄（必須）"
                 onChange={(e) => inputText(e)}
                 value={
                   // editing ? articleInfo?.text :
