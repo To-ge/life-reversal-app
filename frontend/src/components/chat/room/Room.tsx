@@ -1,6 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
-import { createConsumer } from "@rails/actioncable";
 import { useSession } from "next-auth/react";
 import { UserContext } from "provider/userProvider";
 import api from "utils/axios";
@@ -21,7 +19,7 @@ export default function Room(props: RoomProps) {
   const [messages, setMessages] = useState<Message[] | []>([]);
   const [inputMessage, setInputMessage] = useState("");
   const channelRef = useRef<any>(null);
-  const cable = useContext(ActionCableContext);
+  const { cable } = useContext(ActionCableContext);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
   const { partner } = useContext(UserContext);
   const chatContainer = useRef(null);
@@ -30,7 +28,6 @@ export default function Room(props: RoomProps) {
     const newChatPartner: User | null = JSON.parse(
       localStorage.getItem("chat_partner")
     );
-    console.log(newChatPartner);
     setChatPartner(newChatPartner);
   }, [partner]);
 
@@ -72,8 +69,10 @@ export default function Room(props: RoomProps) {
     scrollDown(chatContainer);
   }, [messages]);
 
+  console.log(cable);
   useEffect(() => {
-    if (!channel && cable && chatPartner) {
+    if (cable && chatPartner) {
+      console.log("接続開始");
       const chnl = cable.subscriptions.create(
         {
           channel: `${session?.user?.name}_${chatPartner.name}`,
@@ -86,7 +85,7 @@ export default function Room(props: RoomProps) {
             console.log("RoomsChannel disconnected!");
           },
           received: (data) => {
-            console.log(data);
+            console.log("Received message:", data);
           },
         }
       );
@@ -144,7 +143,6 @@ export default function Room(props: RoomProps) {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="コメントを入力"
-          // onChange={(e) => setInputMessage(e.target.value)}
         />
         <button
           className="bg-teal-500 hover:bg-teal-600 text-white rounded-r-md px-4 py-2"

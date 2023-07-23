@@ -161,6 +161,7 @@ GEM
     rainbow (3.1.1)
     rake (13.0.6)
     rbs (3.1.0)
+    redis (4.8.1)
     regexp_parser (2.8.0)
     reline (0.3.3)
       io-console (~> 0.5)
@@ -212,6 +213,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.4, >= 7.0.4.2)
+  redis (~> 4.0)
   rubocop
   tzinfo-data
 

@@ -1,6 +1,7 @@
 import TopBar from "components/topbar/TopBar";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { UserContext } from "provider/userProvider";
 import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -43,9 +44,7 @@ const Profile = () => {
         followed_id: followingUser.id,
       });
       if (res.message) {
-        setFollowingUsers(
-          followingUsers.filter((user) => user.id === followingUser.id)
-        );
+        setFollowingUsers(followingUsers.filter((user) => user.id !== res.id));
         toast.success(res.message);
       } else {
         toast.error(res.error);
@@ -56,7 +55,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-yellow-100">
+    <div className="w-screen h-screen fixed bg-yellow-100">
       <TopBar />
       <div className=" h-full w-full">
         <div className="bg-white rounded-2xl m-20 p-12 shadow-xl flex flex-col">
@@ -108,9 +107,6 @@ const Profile = () => {
                         </p>
                       </div>
                       <div>
-                        <button className="bg-blue-300 rounded-lg px-4 py-3 mr-5">
-                          ルームへ
-                        </button>
                         <button
                           className="bg-red-300 rounded-lg px-6 py-3"
                           onClick={() => deleteFollow(followingUser)}
