@@ -18,7 +18,7 @@ type PropsType = {
 const ArticleDetail = (props: PropsType) => {
   const { articleInfo } = props;
   const { user, article } = articleInfo;
-  const [cards, setCards] = useState();
+  const [cards, setCards] = useState<Card[] | []>([]);
   const { data: session, status } = useSession();
   const [editing, setEditing] = useState(false);
   const [cardId, setCardId] = useState<number | undefined>();
@@ -49,7 +49,7 @@ const ArticleDetail = (props: PropsType) => {
       setEditing(true);
     } else if (text === "Follow") {
       const response = await followUser({
-        email: session?.user?.email,
+        email: session?.user?.email || "",
         followed_id: user.id,
       });
       console.log(response);
@@ -141,7 +141,7 @@ const ArticleDetail = (props: PropsType) => {
               type="text"
               className="p-7 text-2xl w-full focus:outline-none rounded-lg"
               placeholder="when, where, how"
-              readOnly={user.uid !== session?.user?.user_id && editing}
+              readOnly={user.email !== session?.user?.email && editing}
               onChange={(e) => handleChange(card.id, e.target.value)}
               value={card.text}
             />
