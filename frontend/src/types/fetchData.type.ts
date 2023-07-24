@@ -21,7 +21,7 @@ type Article = {
 };
 
 interface UserAndArticle {
-  user: User;
+  user?: User;
   article: Article;
 }
 interface UsersAndArticles {
@@ -29,9 +29,15 @@ interface UsersAndArticles {
   articles: Article[];
 }
 
+interface UserAndArticleAndCards {
+  user: User;
+  article: Article;
+  cards: Card[];
+}
+
 type Card = {
   id: number;
-  text: string;
+  content: string;
 };
 
 type FollowUser = {
@@ -42,6 +48,8 @@ type FollowUser = {
 
 type Message = {
   id?: number;
+  user_id: number;
+  room_id: number;
   content: string;
 };
 

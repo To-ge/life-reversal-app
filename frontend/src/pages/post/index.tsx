@@ -3,23 +3,18 @@ import TreeView from "components/post/tree-view/TreeView";
 import TopBar from "components/topbar/TopBar";
 import { useEffect, useState } from "react";
 
-type CardInfoType = {
-  id: number;
-  text: string | undefined;
-};
-
 const Post = () => {
-  const [buttonAction, setButtonAction] = useState(null);
-  const [cardInfo, setCardInfo] = useState<CardInfoType[] | []>([]);
+  const [buttonAction, setButtonAction] = useState<string>("");
+  const [cardInfo, setCardInfo] = useState<Card[] | []>([]);
   const [commentPanel, setCommentPanel] = useState<boolean>(false);
 
   useEffect(() => {
     if (buttonAction === "Add") {
-      setCardInfo((prev) => [
+      setCardInfo((prev: Card[]) => [
         ...prev,
         {
           id: cardInfo.length + 1,
-          text: "",
+          content: "",
         },
       ]);
       console.log(cardInfo);
@@ -30,7 +25,7 @@ const Post = () => {
     } else if (buttonAction === "Publish") {
       setCommentPanel(true);
     }
-    setButtonAction(null);
+    setButtonAction("");
   }, [buttonAction]);
 
   return (

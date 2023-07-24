@@ -20,9 +20,6 @@ export default NextAuth({
         password: { label: "password", type: "password" },
       },
       async authorize(credentials, req): Promise<any> {
-        // ... ログイン処理を記載
-        console.log("🚀🚀");
-
         const { name, email, password } = credentials as {
           name: string;
           email: string;
@@ -33,46 +30,7 @@ export default NextAuth({
         } else {
           return false;
         }
-        // try {
-        //   const response = await api.post("/auth/login", {
-        //     provider: "credentials",
-        //     uid: email + name,
-        //     name,
-        //     email,
-        //     image: null,
-        //     password,
-        //   });
-        //   if (response.status === 200) {
-        //     console.log(response.data);
-        //     console.log("return response!!!");
-        //     return response.data;
-        //   } else {
-        //     return null;
-        //   }
-        // } catch (error) {
-        //   console.log("error", error);
-        //   return null;
-        // }
       },
-      // callbacks: {
-      //   jwt: ({token,user})=>{
-      //     if(user){
-      //       token.id=user.id
-      //     }
-      //     return token;
-      //   },
-      //   session:({session,token})=>{
-      //     if(token){
-      //       session.id=token.id
-      //     }
-      //     return session;
-      //   },
-      // },
-      // secret:"test",
-      // jwt:{
-      //   secret:"test",
-      //   encryption: true,
-      // }
     }),
     GoogleProvider({
       clientId: `${process.env.GOOGLE_CLIENT_ID}`,
@@ -81,23 +39,14 @@ export default NextAuth({
   ],
   callbacks: {
     async session({ session, token, user }) {
-      console.log("🍌");
-      console.log(session);
-      // try {
-      //   const response = await api.get("/auth/user");
-      //   console.log(response);
       const updatedSession = {
         ...session,
         user: {
-          // id: 1,
           user_id: token.sub,
           ...session.user,
         },
       };
       return updatedSession;
-      // } catch (e) {
-      //   console.log(e);
-      // }
     },
     async signIn({ user, account, profile, credentials }) {
       console.log(credentials);
@@ -106,9 +55,8 @@ export default NextAuth({
       const email = user?.email || credentials?.email;
       const uid = user?.id || credentials?.csrfToken;
       const image = user.image;
-      const password = credentials?.password || name + uid;
+      const password = credentials?.password || `${name}${uid}`;
       try {
-        console.log("🚀");
         const response = await api.post("/auth/login", {
           provider,
           uid,

@@ -29,6 +29,21 @@ class Api::V1::ArticlesController < ApplicationController
     render json: {error: e.message}
   end
 
+  def article_detail
+    article = Article.find(params[:id])
+    user = article.user
+    cards = article.cards
+
+    if article && user && cards
+      render json: {user: user, article: article, cards: cards}
+    else
+      render json: {message: "記事がありません"}
+    end
+  rescue StandardError => e
+    render json: {error: e.message}
+  end
+
+
   def update
     article = Article.find(params[:id])
 

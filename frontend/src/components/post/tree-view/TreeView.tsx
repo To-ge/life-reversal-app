@@ -1,31 +1,19 @@
-import { useEffect, useState } from "react";
-
-type CardInfoType = {
-  id: number;
-  text: string | undefined;
-};
-
 type TreeViewProps = {
-  cardInfo: CardInfoType[];
-  setCardInfo: React.Dispatch<React.SetStateAction<Array<{}>>>;
+  cardInfo: Card[] | [];
+  setCardInfo: React.Dispatch<React.SetStateAction<Card[] | []>>;
 };
 
-const TreeView = (props: TreeViewProps | UserAndArticle) => {
+const TreeView = (props: TreeViewProps) => {
   const { cardInfo, setCardInfo } = props;
-  // const [holdInfo, setHoldInfo] = useState<CardInfoType[] | []>([]);
 
   const handleChange = (index: number, text: string) => {
-    setCardInfo((prev) => {
-      let updatedInfo: CardInfoType[] | [] = [...prev];
+    setCardInfo((prev: Card[] | []) => {
+      let updatedInfo: Card[] | [] = [...prev];
       console.log(updatedInfo);
-      updatedInfo[index].text = text;
+      updatedInfo[index].content = text;
       return updatedInfo;
     });
   };
-
-  // useEffect(() => {
-  //   setHoldInfo((prev) => prev.slice(0, cardInfo.length));
-  // }, [cardInfo]);
 
   return (
     <div className="w-2/3 bg-gradient-to-r from-gray-300 to-slate-600 flex justify-center">
@@ -40,7 +28,7 @@ const TreeView = (props: TreeViewProps | UserAndArticle) => {
               className="p-7 text-2xl w-full focus:outline-none rounded-lg"
               placeholder="when, where, how"
               onChange={(e) => handleChange(index, e.target.value)}
-              value={card.text}
+              value={card.content}
             />
           </li>
         ))}

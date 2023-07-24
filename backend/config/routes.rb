@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       post 'all_messages', to:'messages#find_all'
       post 'find_followers', to:'follower_relationships#find_followers'
       post 'find_following_users', to:'follower_relationships#find_following_users'
+      get 'article_detail/:id', to:'articles#article_detail'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

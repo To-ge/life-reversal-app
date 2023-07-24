@@ -23,11 +23,11 @@ const Profile = () => {
     const getFollowersAndFollowingUser = async () => {
       try {
         const followerRes = await findFollowers({
-          email: session?.user?.email,
+          email: session?.user?.email || "",
         });
         setFollowers(followerRes);
         const followingUserRes = await findFollowingUsers({
-          email: session?.user?.email,
+          email: session?.user?.email || "",
         });
         setFollowingUsers(followingUserRes);
       } catch (e) {
@@ -40,7 +40,7 @@ const Profile = () => {
   const deleteFollow = async (followingUser: User) => {
     try {
       const res = await deleteFollowingUser({
-        email: session?.user?.email,
+        email: session?.user?.email || "",
         followed_id: followingUser.id,
       });
       if (res.message) {

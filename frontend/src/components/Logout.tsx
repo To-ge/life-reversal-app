@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import { UserContext } from "provider/userProvider";
 import { useContext } from "react";
+import { UserProvider } from "types/props.type";
 import api from "utils/axios";
 
 const Logout = () => {
@@ -9,7 +10,7 @@ const Logout = () => {
 
   const handleLogout = async () => {
     if (currentUser) {
-      logout();
+      logout && logout();
     } else {
       signOut();
       localStorage.removeItem("chat_partner");

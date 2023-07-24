@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import Logout from "components/Logout";
@@ -10,7 +9,7 @@ import { useEffect } from "react";
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
 const TopBar = () => {
-  const { data: session } = useSession<Session | null>();
+  const { data: session } = useSession<boolean>();
   const router = useRouter();
 
   useEffect(() => {
