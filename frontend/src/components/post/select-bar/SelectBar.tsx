@@ -6,15 +6,10 @@ import { Session } from "next-auth";
 import api from "utils/axios";
 import { UserContext } from "provider/userProvider";
 
-type CardInfoType = {
-  id: number;
-  text: string;
-};
-
 type SelectBar = {
   setButtonAction?: React.Dispatch<React.SetStateAction<string>>;
   commentPanel: boolean;
-  setCommentPanel?: React.Dispatch<React.SetStateAction<boolean>>;
+  setCommentPanel: React.Dispatch<React.SetStateAction<boolean>>;
   cardInfo: Card[];
   editing?: boolean;
   article?: Article;
@@ -33,14 +28,14 @@ const SelectBar = (props: SelectBar) => {
   } = props;
   const [comment, setComment] = useState<string>("");
   const router = useRouter();
-  const { data: session } = useSession<Session>();
+  const { data: session } = useSession<boolean>();
 
   useEffect(() => {
     article && setComment(article.text);
   }, []);
 
-  const handleClick = (e) => {
-    setButtonAction(e.target.innerText);
+  const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    setButtonAction && setButtonAction(e.currentTarget.innerText);
   };
 
   const publishArticle = async () => {
@@ -74,16 +69,8 @@ const SelectBar = (props: SelectBar) => {
     }
   };
 
-  const inputText = (e) => {
-    // if (editing) {
-    //   setArticleInfo((prev: Article) => {
-    //     let updatedInfo: Article = prev;
-    //     updatedInfo.text = e.target.value;
-    //     return updatedInfo;
-    //   });
-    // } else {
+  const inputText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
-    // }
   };
 
   return (

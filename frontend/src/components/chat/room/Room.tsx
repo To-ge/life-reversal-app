@@ -6,6 +6,7 @@ import { getAllMessages } from "utils/chat";
 import { ActionCableContext } from "provider/ActionCableProvider";
 import { ToastContainer, toast } from "react-toastify";
 import { scrollDown } from "assets/scrollDown";
+import { UserProvider } from "types/props.type";
 
 type RoomProps = {
   color: string;
@@ -15,7 +16,7 @@ type RoomProps = {
 export default function Room(props: RoomProps) {
   const { color, title } = props;
   const { data: session } = useSession();
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState({});
   const [messages, setMessages] = useState<Message[] | []>([]);
   const [inputMessage, setInputMessage] = useState("");
   const channelRef = useRef<any>(null);
@@ -25,10 +26,11 @@ export default function Room(props: RoomProps) {
   const chatContainer = useRef(null);
 
   useEffect(() => {
-    const newChatPartner: User | null = JSON.parse(
-      localStorage.getItem("chat_partner") || ""
-    );
-    setChatPartner(newChatPartner);
+    const chatPartnerData = localStorage.getItem("chat_partner");
+    if (chatPartnerData) {
+      const newChatPartner: User = JSON.parse(chatPartnerData);
+      setChatPartner(newChatPartner);
+    }
   }, [partner]);
 
   useEffect(() => {

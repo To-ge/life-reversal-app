@@ -1,12 +1,9 @@
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
-import Logout from "components/Logout";
 import Login from "components/Login";
-import DeleteUser from "components/DeleteUser";
 import TopBar from "components/topbar/TopBar";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
@@ -24,8 +21,7 @@ export default function Home() {
 
   console.log(session?.user);
 
-  const onSubmit = async (e) => {
-    e.preventDefault;
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       const res = await signIn("credentials", {
         name,

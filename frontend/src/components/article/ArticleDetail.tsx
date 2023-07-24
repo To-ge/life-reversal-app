@@ -11,35 +11,22 @@ import { useRouter } from "next/router";
 
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
-type PropsType = {
-  articleInfo: UserAndArticle;
-};
-
-const ArticleDetail = (props: PropsType) => {
+const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
   const { articleInfo } = props;
-  const { user, article } = articleInfo;
-  const [cards, setCards] = useState<Card[] | []>([]);
+  const { user, article, cards } = articleInfo;
+  const [cardInfo, setCardInfo] = useState<Card[] | []>(
+    JSON.parse(cards[0].content)
+  );
   const { data: session, status } = useSession();
   const [editing, setEditing] = useState(false);
   const [cardId, setCardId] = useState<number | undefined>();
   const router = useRouter();
 
-  useEffect(() => {
-    article && console.log(article);
-    const getCards = async () => {
-      const response = await api.get(`/cards/${article.id}`);
-      response && setCards(JSON.parse(response.data[0].content));
-      setCardId(response.data[0].id);
-    };
-    getCards();
-    setEditing(false);
-  }, []);
-
   const handleChange = (index: number, text: string) => {
-    setCards((prev) => {
+    setCardInfo((prev) => {
       let updatedInfo: Card[] | [] = [...prev];
       console.log(updatedInfo);
-      updatedInfo[index - 1].text = text;
+      updatedInfo[index - 1].content = text;
       return updatedInfo;
     });
   };
@@ -97,7 +84,7 @@ const ArticleDetail = (props: PropsType) => {
               <div>
                 <button
                   className="bg-black text-white rounded-full px-5 py-2 hover:text-gray-400"
-                  onClick={(e) => clickButton(e.target.innerText)}
+                  onClick={(e) => clickButton(e.currentTarget.innerText)}
                 >
                   {user.email !== session?.user?.email ? "Follow" : "Edit"}
                 </button>
@@ -121,32 +108,30 @@ const ArticleDetail = (props: PropsType) => {
         <SelectBar
           editing={editing}
           commentPanel={true}
-          cardInfo={cards}
+          cardInfo={cardInfo}
           article={article}
-          cardId={cardId}
+          cardId={cards[0].id}
           setCommentPanel={setEditing}
         />
       )}
 
       <ul className="w-2/3 flex flex-col items-center p-5 space-y-10 overflow-y-auto mb-20">
-        {cards?.map((card) => (
-          <li key={card.id} className="w-4/5 shadow-xl">
-            <p className="w-20 text-lg ml-8 bg-white flex justify-center rounded-t-lg">
-              {`No.${card.id}`}
-            </p>
-            {/* <p className="p-7 text-2xl w-full rounded-lg bg-white">
-              {card.text}
-            </p> */}
-            <input
-              type="text"
-              className="p-7 text-2xl w-full focus:outline-none rounded-lg"
-              placeholder="when, where, how"
-              readOnly={user.email !== session?.user?.email && editing}
-              onChange={(e) => handleChange(card.id, e.target.value)}
-              value={card.text}
-            />
-          </li>
-        ))}
+        {cardInfo &&
+          cardInfo.map((card: Card) => (
+            <li key={card.id} className="w-4/5 shadow-xl">
+              <p className="w-20 text-lg ml-8 bg-white flex justify-center rounded-t-lg">
+                {`No.${card.id}`}
+              </p>
+              <input
+                type="text"
+                className="p-7 text-2xl w-full focus:outline-none rounded-lg"
+                placeholder="when, where, how"
+                readOnly={user.email !== session?.user?.email && editing}
+                onChange={(e) => handleChange(card.id, e.target.value)}
+                value={card.content}
+              />
+            </li>
+          ))}
       </ul>
     </div>
   );

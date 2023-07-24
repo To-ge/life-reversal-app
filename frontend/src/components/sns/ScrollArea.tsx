@@ -1,16 +1,8 @@
 import Link from "next/link";
 import PostedArticle from "./PostedArticle";
-import { useCallback, useEffect, useState } from "react";
-import api from "utils/axios";
+import { useCallback, useState } from "react";
 import Image from "next/image";
-import {
-  GetServerSideProps,
-  GetStaticProps,
-  InferGetServerSidePropsType,
-} from "next";
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
-import Article from "pages/article/[article_id]";
 
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
@@ -21,7 +13,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
     articles
   );
   const [postVol, setPostVol] = useState<number>(0);
-  const { data: session } = useSession<Session>();
+  const { data: session } = useSession<boolean>();
 
   const getPropsString = (props: UserAndArticle) => JSON.stringify(props);
 
@@ -40,7 +32,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   };
 
   const displayInfo = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const hoverUserId = Number(e.currentTarget.id);
       if (users.length >= 1) {
         setPanelUser(users.find((user: User) => user.id === hoverUserId));
@@ -59,13 +51,13 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
       <div className="w-1/4 p-5 h-screen">
         <div className="flex justify-center">
           <div
-            onClick={(e) => filterArticle(e.target.innerText)}
+            onClick={(e) => filterArticle(e.currentTarget.innerText)}
             className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
           >
             My Articles
           </div>
           <div
-            onClick={(e) => filterArticle(e.target.innerText)}
+            onClick={(e) => filterArticle(e.currentTarget.innerText)}
             className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
           >
             All Articles
@@ -99,20 +91,11 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
       </div>
       <div className="w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
         {filterdArticles &&
+          Array.isArray(filterdArticles) &&
           filterdArticles.map((article: Article) => (
             <Link
               key={article.id}
-              href={{
-                pathname: `/article/${article.id}`,
-                query: {
-                  props: getPropsString({
-                    user: users?.find(
-                      (user: User) => user.id === article.user_id
-                    ),
-                    article,
-                  } as UserAndArticle),
-                },
-              }}
+              href={`/article/${article.id}`}
               className="flex justify-center w-full"
             >
               <div
