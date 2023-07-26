@@ -3,6 +3,7 @@ import PostedArticle from "./PostedArticle";
 import { useCallback, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import useBreakpoint from "responsive/useBreakpoint";
 
 const DEFAULT_IMAGE_IMG = "/default-user.jpg";
 
@@ -14,8 +15,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   );
   const [postVol, setPostVol] = useState<number>(0);
   const { data: session } = useSession<boolean>();
-
-  const getPropsString = (props: UserAndArticle) => JSON.stringify(props);
+  const breakpoint = useBreakpoint();
 
   const userInfo: User | undefined = users.find(
     (user) => user.email === session?.user?.email
@@ -47,49 +47,51 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   );
 
   return (
-    <div className="flex w-screen">
-      <div className="w-1/4 p-5 h-screen">
-        <div className="flex justify-center">
+    <div className="flex flex-col md:flex-row w-screen">
+      <div className="md:w-1/4 md:p-5 md:h-screen">
+        <div className="flex justify-center md:flex-col lg:flex-row">
           <div
             onClick={(e) => filterArticle(e.currentTarget.innerText)}
-            className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
+            className="basis-1/2 text-center bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
           >
             My Articles
           </div>
           <div
             onClick={(e) => filterArticle(e.currentTarget.innerText)}
-            className="bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
+            className="basis-1/2 text-center bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
           >
             All Articles
           </div>
         </div>
-        <div className="h-2/3 flex items-center justify-center">
-          {panel && (
-            <div className="w-4/5 bg-white rounded-md p-5 space-y-5 shadow-lg shadow-black">
-              <Image
-                src={panelUser?.image || DEFAULT_IMAGE_IMG}
-                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
-                width={70}
-                height={70}
-                alt="Picture of the author"
-              />
-              <p>
-                登録日:
-                {panelUser &&
-                  new Date(panelUser?.created_at).toLocaleString("ja-JP", {
-                    timeZone: "Asia/Tokyo",
-                    dateStyle: "short",
-                  })}
-              </p>
-              <p className="text-xl text-orange-400 mb-3">
-                名前: {panelUser?.name}
-              </p>
-              <p className="text-lg">投稿数: {postVol}</p>
-            </div>
-          )}
-        </div>
+        {!(breakpoint === "sm") && (
+          <div className="h-2/3 flex items-center justify-center">
+            {panel && (
+              <div className="w-4/5 bg-white rounded-md p-5 space-y-5 shadow-lg shadow-black">
+                <Image
+                  src={panelUser?.image || DEFAULT_IMAGE_IMG}
+                  className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
+                  width={70}
+                  height={70}
+                  alt="Picture of the author"
+                />
+                <p>
+                  登録日:
+                  {panelUser &&
+                    new Date(panelUser?.created_at).toLocaleString("ja-JP", {
+                      timeZone: "Asia/Tokyo",
+                      dateStyle: "short",
+                    })}
+                </p>
+                <p className="text-xl text-orange-400 mb-3">
+                  名前: {panelUser?.name}
+                </p>
+                <p className="text-lg">投稿数: {postVol}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      <div className="w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
+      <div className="w-full md:w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
         {filterdArticles &&
           Array.isArray(filterdArticles) &&
           filterdArticles.map((article: Article) => (

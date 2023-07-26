@@ -32,7 +32,7 @@ class Api::V1::ArticlesController < ApplicationController
   def article_detail
     article = Article.find(params[:id])
     user = article.user
-    cards = article.cards
+    cards = article.cards.first
 
     if article && user && cards
       render json: {user: user, article: article, cards: cards}
