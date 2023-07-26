@@ -7,6 +7,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
+import useImageSize from "responsive/useImageSize";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -18,8 +19,7 @@ export default function Home() {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  console.log(session?.user);
+  const imageSize = useImageSize(300, 300);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -56,36 +56,36 @@ export default function Home() {
           <div className=" mx-auto w-1/4 left-3/4 h-full absolute -z-10">
             <img src="/green_2.jpg" alt="" className="h-full" />
           </div>
-          <div className="top-1/4 right-10 z-10 absolute overflow-hidden">
+          <div className="top-1/4 right-10 z-10 absolute overflow-hidden opacity-0 md:opacity-100">
             <Image
               src="/chat_1.jpg"
-              width={300}
-              height={300}
+              width={imageSize.width}
+              height={imageSize.height}
               alt=""
               className="rounded-full object-cover"
             />
           </div>
-          <div className="top-1/4 left-10 z-10 absolute overflow-hidden ">
+          <div className="top-1/4 left-10 z-10 absolute overflow-hidden opacity-0 md:opacity-100">
             <Image
               src="/step_1.jpg"
-              width={400}
-              height={400}
+              width={imageSize.width}
+              height={imageSize.height}
               alt=""
               className="rounded-full object-cover shadow-md shadow-gray-500"
             />
           </div>
           <div className="w-full h-1/4 flex justify-center z-30">
-            <h1 className="font-bold text-8xl drop-shadow-[15px_15px_5px_rgba(79,153,153,1)] underline decoration-dashed decoration-8 decoration-teal-500 text-white my-auto">
+            <h1 className="font-bold text-4xl md:text-8xl drop-shadow-[15px_15px_5px_rgba(79,153,153,1)] underline decoration-dashed decoration-8 decoration-teal-500 text-white my-auto">
               Life Reversal
             </h1>
           </div>
           <div className="h-1/2 w-full flex justify-center">
             {status === "authenticated" ? (
-              <p className="text-4xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
+              <p className="text3xl lg:text-4xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
                 失敗を経験している人へ、これからの人生設計の手助けをします
               </p>
             ) : (
-              <div className="bg-white p-10 rounded-md w-1/3 mb-5">
+              <div className="bg-white p-10 rounded-md w-5/6 md:w-1/2 mb-5 z-50 ">
                 <div className="flex items-center justify-between">
                   <h1 className="text-2xl font-bold">ログインフォーム</h1>
                 </div>

@@ -9,8 +9,7 @@ const TreeView = (props: TreeViewProps) => {
   const handleChange = (index: number, text: string) => {
     setCardInfo((prev: Card[] | []) => {
       let updatedInfo: Card[] | [] = [...prev];
-      console.log(updatedInfo);
-      updatedInfo[index].content = text;
+      updatedInfo[index].text = text;
       return updatedInfo;
     });
   };
@@ -28,7 +27,7 @@ const TreeView = (props: TreeViewProps) => {
               className="p-7 text-2xl w-full focus:outline-none rounded-lg"
               placeholder="when, where, how"
               onChange={(e) => handleChange(index, e.target.value)}
-              value={card.content}
+              value={card.text}
             />
           </li>
         ))}

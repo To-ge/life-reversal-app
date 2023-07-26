@@ -21,7 +21,7 @@ const Logout = () => {
   if (status === "authenticated" || currentUser) {
     return (
       <button
-        className="px-4 py-2 bg-gray-300 text-gray-600 hover:bg-gray-600 hover:text-white m-5"
+        className="text-sm px-1 py-1 sm:text-base sm:px-4 sm:py-2 bg-gray-300 text-gray-600 hover:bg-gray-600 hover:text-white m-5"
         onClick={handleLogout}
       >
         ログアウト

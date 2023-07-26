@@ -14,10 +14,9 @@ const Post = () => {
         ...prev,
         {
           id: cardInfo.length + 1,
-          content: "",
+          text: "",
         },
       ]);
-      console.log(cardInfo);
     } else if (buttonAction === "Delete One") {
       setCardInfo((prev) => prev.slice(0, prev.length - 1));
     } else if (buttonAction === "Delete All") {

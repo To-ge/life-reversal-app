@@ -1,8 +1,7 @@
 import SelectBar from "components/post/select-bar/SelectBar";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { UserContext } from "provider/userProvider";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import api from "utils/axios";
 import { followUser } from "utils/follow";
@@ -15,18 +14,18 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
   const { articleInfo } = props;
   const { user, article, cards } = articleInfo;
   const [cardInfo, setCardInfo] = useState<Card[] | []>(
-    JSON.parse(cards[0].content)
+    JSON.parse(cards.content)
   );
   const { data: session, status } = useSession();
   const [editing, setEditing] = useState(false);
-  const [cardId, setCardId] = useState<number | undefined>();
   const router = useRouter();
 
-  const handleChange = (index: number, text: string) => {
+  const handleChange = (index: number, text: string, e: any) => {
+    console.log(e.target);
     setCardInfo((prev) => {
       let updatedInfo: Card[] | [] = [...prev];
       console.log(updatedInfo);
-      updatedInfo[index - 1].content = text;
+      updatedInfo[index - 1].text = text;
       return updatedInfo;
     });
   };
@@ -66,22 +65,22 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
     <div className="w-full bg-gradient-to-b from-orange-300 to-red-300 flex justify-center">
       {!editing ? (
         <div className="w-1/3">
-          <div className="bg-white rounded-2xl m-20 p-12 shadow-xl flex flex-col">
-            <div className="h-1/3 flex justify-around items-center mb-5">
+          <div className="bg-white rounded-2xl m-3 p-5 xl:m-20 xl:p-12 shadow-xl flex flex-col">
+            <div className="h-1/3 flex flex-wrap lg:flex-row justify-around items-center mb-5 space-y-2">
               <Image
                 src={user?.image || DEFAULT_IMAGE_IMG}
-                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
+                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover basis-full lg:basis-1/2"
                 width={80}
                 height={80}
                 alt="Picture of the author"
               />
-              <div>
+              <div className="basis-full lg:basis-1/2 text-center">
                 <p className="text-lg text-teal-500 font-bold">
                   From : {user?.name}
                 </p>
                 <p className="text-md text-gray-500">{user?.email}</p>
               </div>
-              <div>
+              <div className="flex basis-full justify-center">
                 <button
                   className="bg-black text-white rounded-full px-5 py-2 hover:text-gray-400"
                   onClick={(e) => clickButton(e.currentTarget.innerText)}
@@ -110,7 +109,7 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
           commentPanel={true}
           cardInfo={cardInfo}
           article={article}
-          cardId={cards[0].id}
+          cardId={cards.id}
           setCommentPanel={setEditing}
         />
       )}
@@ -122,13 +121,14 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
               <p className="w-20 text-lg ml-8 bg-white flex justify-center rounded-t-lg">
                 {`No.${card.id}`}
               </p>
-              <input
-                type="text"
+              <textarea
+                value={card.text}
+                onChange={(e) => handleChange(card.id, e.target.value, e)}
                 className="p-7 text-2xl w-full focus:outline-none rounded-lg"
                 placeholder="when, where, how"
-                readOnly={user.email !== session?.user?.email && editing}
-                onChange={(e) => handleChange(card.id, e.target.value)}
-                value={card.content}
+                readOnly={user.email !== session?.user?.email && !editing}
+                rows={1}
+                wrap="soft"
               />
             </li>
           ))}

@@ -58,8 +58,8 @@ const Profile = () => {
     <div className="w-screen h-screen fixed bg-yellow-100">
       <TopBar />
       <div className=" h-full w-full">
-        <div className="bg-white rounded-2xl m-20 p-12 shadow-xl flex flex-col">
-          <div className="h-1/3 flex justify-around items-center mb-5 p-5">
+        <div className="bg-white h-3/4 rounded-2xl m-20 p-12 shadow-xl flex flex-col">
+          <div className="h-1/5 flex justify-around items-center mb-5 p-5">
             <div></div>
             <Image
               src={session?.user?.image || DEFAULT_IMAGE_IMG}
@@ -79,17 +79,17 @@ const Profile = () => {
             <div></div>
           </div>
           <hr className="border-2" />
-          <div>
+          <div className="overflow-hidden h-3/4 w-full">
             <h2 className="flex justify-center items-center text-2xl py-3 font-bold">
               {followingUsers.length >= 1
                 ? "フォロー中"
                 : "誰もフォローしていません"}
             </h2>
-            <ul className="flex flex-col w-5/6 m-auto space-y-3 overflow-y-auto mb-20">
+            <ul className="flex flex-col h-5/6 w-5/6 mx-auto space-y-3 overflow-y-auto mb-20">
               {followingUsers.length >= 1 &&
                 followingUsers?.map((followingUser: User) => (
                   <li key={followingUser?.id} className="py-3 border-t-2">
-                    <div className="h-1/3 flex justify-around items-center">
+                    <div className="flex justify-around items-center">
                       <div></div>
                       <Image
                         src={followingUser?.image || DEFAULT_IMAGE_IMG}

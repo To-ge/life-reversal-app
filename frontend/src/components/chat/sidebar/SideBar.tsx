@@ -6,6 +6,8 @@ import { UserContext } from "provider/userProvider";
 import { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useBreakpoint from "responsive/useBreakpoint";
+import useImageSize from "responsive/useImageSize";
 import { UserProvider } from "types/props.type";
 import { findFollowingUsers } from "utils/follow";
 
@@ -22,6 +24,8 @@ const SideBar = (props: SideBarProps) => {
   const { data: session } = useSession<boolean>();
   const [followingUsers, setFollowingUsers] = useState<User[] | []>([]);
   const { displayChat } = useContext<UserProvider>(UserContext);
+  const imageSize = useImageSize(80, 80);
+  const breakpoint = useBreakpoint();
 
   useEffect(() => {
     const getFollowingUser = async () => {
@@ -57,16 +61,16 @@ const SideBar = (props: SideBarProps) => {
                   <Image
                     src={followingUser?.image || DEFAULT_IMAGE_IMG}
                     alt=""
-                    width={40}
-                    height={40}
+                    width={imageSize.width}
+                    height={imageSize.height}
                     className="mr-3 rounded-md"
                   />
                   <h2 className="text-xl w-3/5 truncate mx-2">
                     {followingUser?.name}
                   </h2>
-                  <p className="text-sm truncate">
-                    hello, world! have a good day!
-                  </p>
+                  {!["sm", "md", "lg"].includes(breakpoint) && (
+                    <p className="text-sm truncate">{followingUser.email}</p>
+                  )}
                 </div>
               </li>
             );

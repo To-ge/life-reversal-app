@@ -32,12 +32,12 @@ interface UsersAndArticles {
 interface UserAndArticleAndCards {
   user: User;
   article: Article;
-  cards: Card[];
+  cards: { id: number; content: string };
 }
 
 type Card = {
   id: number;
-  content: string;
+  text: string;
 };
 
 type FollowUser = {

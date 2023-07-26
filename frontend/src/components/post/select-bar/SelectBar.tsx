@@ -1,10 +1,9 @@
 import { ButtonActions } from "./ButtonActions";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 import api from "utils/axios";
-import { UserContext } from "provider/userProvider";
+import useBreakpoint from "responsive/useBreakpoint";
 
 type SelectBar = {
   setButtonAction?: React.Dispatch<React.SetStateAction<string>>;
@@ -29,6 +28,7 @@ const SelectBar = (props: SelectBar) => {
   const [comment, setComment] = useState<string>("");
   const router = useRouter();
   const { data: session } = useSession<boolean>();
+  const breakpoint = useBreakpoint();
 
   useEffect(() => {
     article && setComment(article.text);
@@ -41,7 +41,6 @@ const SelectBar = (props: SelectBar) => {
   const publishArticle = async () => {
     if (comment === "") return;
     try {
-      console.log("作成前");
       if (editing) {
         const articleRes = await api.put(`/articles/${article?.id}`, {
           text: comment,
@@ -50,18 +49,15 @@ const SelectBar = (props: SelectBar) => {
         const cardsRes = await api.put(`/cards/${cardId}`, {
           content: JSON.stringify(cardInfo),
         });
-        console.log(JSON.parse(cardsRes.data.content));
       } else {
         const articleRes = await api.post("/articles", {
           email: session?.user?.email,
           text: comment,
         });
-        console.log(articleRes);
         const cardsRes = await api.post("/cards", {
           article_id: articleRes.data.id,
           content: JSON.stringify(cardInfo),
         });
-        console.log(JSON.parse(cardsRes.data.content));
       }
       router.push("/search");
     } catch (e) {
@@ -87,7 +83,9 @@ const SelectBar = (props: SelectBar) => {
           >
             《 Return
           </div>
-          <p>コメントを書いて投稿しよう</p>
+          {!["sm", "md", "lg"].includes(breakpoint) && (
+            <p>コメントを書いて投稿しよう</p>
+          )}
           <div
             className="px-4 py-2 bg-orange-400 text-white rounded-md cursor-pointer hover:bg-red-600 hover:text-gray-200"
             onClick={publishArticle}
@@ -98,13 +96,13 @@ const SelectBar = (props: SelectBar) => {
       )}
       <div className="h-full">
         {!commentPanel ? (
-          <ul className="h-full flex flex-wrap">
+          <ul className="h-full flex flex-col md:flex-wrap pb-20">
             {ButtonActions.map((action, index) => (
               <li
                 key={index}
                 className={`${
                   action.warn && "text-rose-500"
-                } w-1/2 flex justify-center items-center border-dashed border-4 bg-yellow-500 cursor-pointer text-2xl`}
+                } basis-full md:basis-1/2 flex justify-center items-center border-dashed border-4 bg-yellow-500 cursor-pointer text-2xl`}
                 onClick={(e) => handleClick(e)}
               >
                 {action.name}
@@ -113,15 +111,12 @@ const SelectBar = (props: SelectBar) => {
           </ul>
         ) : (
           <div className="w-full h-full flex justify-center items-start mb-20">
-            <div className="w-5/6 h-4/5 bg-white">
+            <div className="w-full md:w-5/6 h-4/5 bg-white mx-auto">
               <textarea
-                className="min-h-full min-w-full text-lg p-5"
+                className="min-h-full w-full text-lg p-2 md:p-5"
                 placeholder="コメント欄（必須）"
                 onChange={(e) => inputText(e)}
-                value={
-                  // editing ? articleInfo?.text :
-                  comment
-                }
+                value={comment}
               />
             </div>
           </div>
