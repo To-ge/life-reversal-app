@@ -1,37 +1,62 @@
 services:
-  postgres:
-    image: postgres:11.6-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=ja_JP.UTF-8"
-      TZ: Asia/Tokyo
-    volumes:
-      - postgres_volume:/var/lib/postgresql
-    hostname: postgres
+  # postgres:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - DB_LANG=ja_JP
+  #   depends_on:
+  #     - redis
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: LR_postgres_sec
+  #     POSTGRES_DB: LR_postgres
+  #     POSTGRES_INITDB_ARGS: --encoding=UTF-8 --locale=ja_JP.UTF-8
+  #     TZ: Asia/Tokyo
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql
+  #   networks:
+  #     - LR_network
+
+  # redis:
+  #   image: redis:latest
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - redis_data:/var/lib/redis
+  #   networks:
+  #     - LR_network
+
   backend:
     tty: true
-    depends_on:
-      - postgres
+    # depends_on:
+    #   - postgres
+    #   - redis
     build:
       context: ./backend/
       dockerfile: Dockerfile
     ports:
       - 3000:3000
     volumes:
-      - ./backend:/app
-    command: rails server -b 0.0.0.0
-  frontend:
-    build:
-      context: ./frontend/
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/usr/src/app
-    command: "npm dev"
-    ports:
-      - "4000:4000"
+      - backend_data:/backend
+    networks:
+      - LR_network
+  # frontend:
+  #   build:
+  #     context: ./frontend/
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #   command: "npm dev"
+  #   ports:
+  #     - "4000:4000"
 volumes:
-  postgres_volume:
-    driver: local
+  # postgres_data:
+  # redis_data:
+  backend_data:
+
+networks:
+  LR_network:
+    external: true

@@ -1,6 +1,8 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  config.action_cable.url = ENV.fetch("ACTION_CABLE_URL") { "ws://localhost:3000/cable" }
+  config.action_cable.allowed_request_origins = ENV.fetch("ACTION_CABLE_ALLOWED_ORIGINS") { ["http://localhost:4000"] }
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -11,7 +13,6 @@ Rails.application.configure do
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
-
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
 

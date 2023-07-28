@@ -86,7 +86,7 @@ export default function Room(props: RoomProps) {
           disconnected: () => {
             console.log("RoomsChannel disconnected!");
           },
-          received: (data: { message: string }) => {
+          received: (data) => {
             console.log("Received message:", data.message);
           },
         }

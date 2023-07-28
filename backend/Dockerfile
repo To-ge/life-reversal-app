@@ -1,20 +1,21 @@
 FROM ruby:3.1.3
 RUN apt-get update -qq \
-  && apt-get install -y nodejs bundle-essential libvips npm
-  # && rm -rf /var/lib/apt/lists/* \
-  # && npm install --global yarn
-RUN mkdir /backend
+  && apt-get install -y nodejs build-essential libvips
+
 WORKDIR /backend
 COPY Gemfile /backend/Gemfile
 COPY Gemfile.lock /backend/Gemfile.lock
+
+RUN gem install bundler
 RUN bundle install
 COPY . /backend
 
-# # Add a script to be executed every time the container starts.
 # COPY entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["/backend/entrypoint.sh"]
+# ENTRYPOINT ["/backend/entrypoint.sh"]
+ENV RAILS_ENV=production
+# ENV RAILS_MASTER_KEY=your_master_key
+
 EXPOSE 3000
 
-# Configure the main process to run when running the image
-CMD ["bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["bin/rails", "server"]
