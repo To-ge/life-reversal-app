@@ -17,8 +17,6 @@ class Api::V1::ArticlesController < ApplicationController
 
   def index
     articles = Article.all
-    puts '🚀'
-    puts @current_user
 
     if articles
       render json: articles
