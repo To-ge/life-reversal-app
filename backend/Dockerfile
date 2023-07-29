@@ -13,9 +13,8 @@ COPY . /backend
 # COPY entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/entrypoint.sh
 # ENTRYPOINT ["/backend/entrypoint.sh"]
-ENV RAILS_ENV=production
 # ENV RAILS_MASTER_KEY=your_master_key
-
+RUN chmod +x /bin/*
+ENV RAILS_ENV=production
 EXPOSE 3000
-
 CMD ["bin/rails", "server"]
