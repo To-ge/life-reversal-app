@@ -26,7 +26,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const Page = ({ data }: InferGetServerSidePropsType<UsersAndArticles>) => {
   const { articles, users } = data;
-  console.log(articles, users);
   return (
     <div className="h-screen w-screen fixed">
       <TopBar />

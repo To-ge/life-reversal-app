@@ -11,20 +11,20 @@ const PostedArticle = (props: UserAndArticle) => {
         <Image
           src={user?.image || DEFAULT_IMAGE_IMG}
           className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
-          width={80}
-          height={80}
+          width={60}
+          height={60}
           alt="Picture of the author"
         />
       </div>
       <div className="basis-5/6">
-        <p>
+        <p className="text-sm">
           {new Date(article?.updated_at).toLocaleString("ja-JP", {
             timeZone: "Asia/Tokyo",
             dateStyle: "short",
           })}
         </p>
-        <p className="text-lg text-teal-500 mb-3">By_{user?.name}</p>
-        <p>{article.text}</p>
+        <p className="text-md text-teal-500 mb-3">By_{user?.name}</p>
+        <p className="text-sm">{article.text}</p>
       </div>
     </div>
   );

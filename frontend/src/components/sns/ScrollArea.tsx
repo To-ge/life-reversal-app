@@ -91,7 +91,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
           </div>
         )}
       </div>
-      <div className="w-full md:w-3/5 h-full flex flex-col items-center overflow-y-auto pb-80">
+      <div className="w-full md:w-3/5 h-full flex flex-col items-center overflow-y-auto pb-60">
         {filterdArticles &&
           Array.isArray(filterdArticles) &&
           filterdArticles.map((article: Article) => (

@@ -19,8 +19,8 @@ export default function Room(props: RoomProps) {
   const [channel, setChannel] = useState({});
   const [messages, setMessages] = useState<Message[] | []>([]);
   const [inputMessage, setInputMessage] = useState("");
-  const channelRef = useRef<any>(null);
-  const { cable } = useContext(ActionCableContext);
+  // const channelRef = useRef<any>(null);
+  // const { cable } = useContext(ActionCableContext);
   const [chatPartner, setChatPartner] = useState<User | null>(null);
   const { partner } = useContext<UserProvider>(UserContext);
   const chatContainer = useRef(null);
@@ -71,47 +71,47 @@ export default function Room(props: RoomProps) {
     scrollDown(chatContainer);
   }, [messages]);
 
-  console.log(cable);
-  useEffect(() => {
-    if (cable && chatPartner) {
-      console.log("接続開始");
-      const chnl = cable.subscriptions.create(
-        {
-          channel: `${session?.user?.name}_${chatPartner.name}`,
-        },
-        {
-          connected: () => {
-            console.log("RoomsChannel connected!");
-          },
-          disconnected: () => {
-            console.log("RoomsChannel disconnected!");
-          },
-          received: (data) => {
-            console.log("Received message:", data.message);
-          },
-        }
-      );
+  // console.log(cable);
+  // useEffect(() => {
+  //   if (cable && chatPartner) {
+  //     console.log("接続開始");
+  //     const chnl = cable.subscriptions.create(
+  //       {
+  //         channel: `${session?.user?.name}_${chatPartner.name}`,
+  //       },
+  //       {
+  //         connected: () => {
+  //           console.log("RoomsChannel connected!");
+  //         },
+  //         disconnected: () => {
+  //           console.log("RoomsChannel disconnected!");
+  //         },
+  //         received: (data) => {
+  //           console.log("Received message:", data.message);
+  //         },
+  //       }
+  //     );
 
-      setChannel(chnl);
-    }
+  //     setChannel(chnl);
+  //   }
 
-    return () => {
-      if (cable) {
-        cable.disconnect();
-      }
-    };
-  }, [chatPartner, cable]);
+  //   return () => {
+  //     if (cable) {
+  //       cable.disconnect();
+  //     }
+  //   };
+  // }, [chatPartner, cable]);
 
   return (
-    <div className={`${color} h-screen flex flex-col items-center pb-40`}>
-      <h1 className="h-12 flex justify-center items-center text-white text-lg">
+    <div className={`${color} h-screen flex flex-col items-center pb-36`}>
+      <h1 className="h-12 flex justify-center items-center text-white text-md">
         To : {chatPartner?.name}
       </h1>
       <div className="overflow-hidden h-4/5 w-full">
         <div
           ref={chatContainer}
           id="room"
-          className="w-full max-h-full flex flex-col space-y-5 overflow-y-auto"
+          className="w-full max-h-full flex flex-col space-y-3 overflow-y-auto"
         >
           {messages &&
             messages.length >= 1 &&
@@ -129,7 +129,7 @@ export default function Room(props: RoomProps) {
                     message.user_id !== chatPartner?.id
                       ? "bg-lime-400"
                       : "bg-slate-300"
-                  } rounded-2xl w-fit px-7 py-3 text-lg font-medium mx-20 my-1 shadow-md shadow-gray-300`}
+                  } rounded-2xl w-fit px-5 py-3 text-sm font-medium mx-12 my-1 shadow-md shadow-gray-300`}
                 >
                   <p>{message.content}</p>
                 </div>
@@ -141,7 +141,7 @@ export default function Room(props: RoomProps) {
       <div className="w-3/5 flex bottom-8 mx-auto">
         <input
           type="text"
-          className="flex-grow px-5 py-4 rounded-l-md border border-gray-300 focus:outline-none focus:border-teal-500 text-lg leading-5 text-xl"
+          className="flex-grow px-5 py-3 rounded-l-md border border-gray-300 focus:outline-none focus:border-teal-500 text-md text-sm"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="コメントを入力"
