@@ -24,7 +24,7 @@ const SideBar = (props: SideBarProps) => {
   const { data: session } = useSession<boolean>();
   const [followingUsers, setFollowingUsers] = useState<User[] | []>([]);
   const { displayChat } = useContext<UserProvider>(UserContext);
-  const imageSize = useImageSize(80, 80);
+  const imageSize = useImageSize(60, 60);
   const breakpoint = useBreakpoint();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const SideBar = (props: SideBarProps) => {
 
   return (
     <aside className={`${width} ${color} h-screen overflow-hidden`}>
-      <div className="font-black text-center my-5 text-lg">{title}</div>
+      <div className="font-black text-center my-4 text-sm">{title}</div>
       <ul className="font-medium overflow-y-auto h-full flex-grow">
         {followingUsers.length >= 1 &&
           followingUsers.map((followingUser: User) => {
@@ -65,7 +65,7 @@ const SideBar = (props: SideBarProps) => {
                     height={imageSize.height}
                     className="mr-3 rounded-md"
                   />
-                  <h2 className="text-xl w-3/5 truncate mx-2">
+                  <h2 className="text-lg w-3/5 truncate mx-2">
                     {followingUser?.name}
                   </h2>
                   {!["sm", "md", "lg"].includes(breakpoint) && (

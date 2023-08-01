@@ -58,21 +58,21 @@ const Profile = () => {
     <div className="w-screen h-screen fixed bg-yellow-100">
       <TopBar />
       <div className=" h-full w-full">
-        <div className="bg-white h-3/4 rounded-2xl m-20 p-12 shadow-xl flex flex-col">
+        <div className="bg-white h-3/4 rounded-2xl my-10 mx-20 p-12 shadow-xl flex flex-col">
           <div className="h-1/5 flex justify-around items-center mb-5 p-5">
             <div></div>
             <Image
               src={session?.user?.image || DEFAULT_IMAGE_IMG}
               className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
-              width={120}
-              height={120}
+              width={60}
+              height={60}
               alt="Picture of the author"
             />
             <div>
-              <p className="text-2xl text-teal-500 font-bold">
+              <p className="text-md text-blue-400 font-bold">
                 Name : {session?.user?.name}
               </p>
-              <p className="text-lg text-gray-500">
+              <p className="text-sm text-gray-500">
                 Email : {session?.user?.email}
               </p>
             </div>
@@ -80,12 +80,12 @@ const Profile = () => {
           </div>
           <hr className="border-2" />
           <div className="overflow-hidden h-3/4 w-full">
-            <h2 className="flex justify-center items-center text-2xl py-3 font-bold">
+            <h2 className="flex justify-center items-center text-sm py-2 font-bold">
               {followingUsers.length >= 1
                 ? "フォロー中"
                 : "誰もフォローしていません"}
             </h2>
-            <ul className="flex flex-col h-5/6 w-5/6 mx-auto space-y-3 overflow-y-auto mb-20">
+            <ul className="flex flex-col h-5/6 w-5/6 mx-auto space-y-2 overflow-y-auto mb-12">
               {followingUsers.length >= 1 &&
                 followingUsers?.map((followingUser: User) => (
                   <li key={followingUser?.id} className="py-3 border-t-2">
@@ -94,21 +94,21 @@ const Profile = () => {
                       <Image
                         src={followingUser?.image || DEFAULT_IMAGE_IMG}
                         className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
-                        width={60}
-                        height={60}
+                        width={40}
+                        height={40}
                         alt="Picture of the author"
                       />
                       <div>
-                        <p className="text-2xl text-teal-500 font-bold">
+                        <p className="text-md text-teal-500 font-bold">
                           Name : {followingUser?.name}
                         </p>
-                        <p className="text-lg text-gray-500">
+                        <p className="textsm text-gray-500">
                           Email : {followingUser?.email}
                         </p>
                       </div>
                       <div>
                         <button
-                          className="bg-red-300 rounded-lg px-6 py-3"
+                          className="bg-red-300 rounded-lg px-4 py-2 text-sm"
                           onClick={() => deleteFollow(followingUser)}
                         >
                           解除

@@ -24,7 +24,6 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
     console.log(e.target);
     setCardInfo((prev) => {
       let updatedInfo: Card[] | [] = [...prev];
-      console.log(updatedInfo);
       updatedInfo[index - 1].text = text;
       return updatedInfo;
     });
@@ -38,7 +37,6 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
         email: session?.user?.email || "",
         followed_id: user.id,
       });
-      console.log(response);
       if (response?.message) {
         toast.success(`${response?.message}`);
       } else {
@@ -65,7 +63,7 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
     <div className="w-full bg-gradient-to-b from-orange-300 to-red-300 flex justify-center">
       {!editing ? (
         <div className="w-1/3">
-          <div className="bg-white rounded-2xl m-3 p-5 xl:m-20 xl:p-12 shadow-xl flex flex-col">
+          <div className="bg-white rounded-2xl m-3 p-5 xl:m-10 xl:p-12 shadow-xl flex flex-col">
             <div className="h-1/3 flex flex-wrap lg:flex-row justify-around items-center mb-5 space-y-2">
               <Image
                 src={user?.image || DEFAULT_IMAGE_IMG}
@@ -98,7 +96,7 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
               </div>
             </div>
             <div className="h-2/3">
-              <p className="font-medium">{article?.text}</p>
+              <p className="">{article?.text}</p>
             </div>
           </div>
           <ToastContainer />
@@ -114,7 +112,7 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
         />
       )}
 
-      <ul className="w-2/3 flex flex-col items-center p-5 space-y-10 overflow-y-auto mb-20">
+      <ul className="w-2/3 flex flex-col items-center p-5 space-y-7 overflow-y-auto mb-20">
         {cardInfo &&
           cardInfo.map((card: Card) => (
             <li key={card.id} className="w-4/5 shadow-xl">
@@ -124,7 +122,7 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
               <textarea
                 value={card.text}
                 onChange={(e) => handleChange(card.id, e.target.value, e)}
-                className="p-7 text-2xl w-full focus:outline-none rounded-lg"
+                className="p-7 text-xl w-full focus:outline-none rounded-lg"
                 placeholder="when, where, how"
                 readOnly={user.email !== session?.user?.email && !editing}
                 rows={1}
