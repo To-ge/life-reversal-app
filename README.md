@@ -20,6 +20,13 @@
 - Rails - v7.0.4
 - PostgreSQL - v14.6
 
+### インフラ
+- Vercel
+- AWS (EC2, RDS, ALB, ACM, Route53)
+- Puma
+- Docker
+- docker-compose
+
 ## 🏗️ 構成
 - Home - トップ画面, ログインフォーム
 - Search - 投稿記事の一覧表示
