@@ -16,15 +16,15 @@ const TreeView = (props: TreeViewProps) => {
 
   return (
     <div className="w-2/3 bg-gradient-to-r from-gray-300 to-slate-600 flex justify-center">
-      <ul className="w-3/4 flex flex-col items-center p-5 space-y-10 overflow-y-auto mb-20">
+      <ul className="w-full sm:w-3/4 flex flex-col items-center p-5 space-y-10 overflow-y-auto mb-20">
         {cardInfo.map((card, index) => (
           <li key={index} className="w-full shadow-xl">
-            <p className="w-20 text-lg ml-8 bg-white flex justify-center rounded-t-lg">
+            <p className="w-12 sm:w-16 text-xs sm:text-sm ml-8 bg-white flex justify-center rounded-t-lg">
               {`No.${index + 1}`}
             </p>
             <input
               type="text"
-              className="py-5 px-7 text-md w-full focus:outline-none rounded-lg"
+              className="py-3 px-5 sm:py-5 sm:px-7 text-md w-full focus:outline-none rounded-lg"
               placeholder="when, where, how"
               onChange={(e) => handleChange(index, e.target.value)}
               value={card.text}

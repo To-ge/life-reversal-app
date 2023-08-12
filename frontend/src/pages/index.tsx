@@ -74,14 +74,14 @@ export default function Home() {
               className="rounded-full object-cover shadow-md shadow-gray-500"
             />
           </div>
-          <div className="w-full h-1/5 flex justify-center z-30">
+          <div className="w-full h-1/6 sm:h-1/5 flex justify-center z-30">
             <h1 className="font-bold text-4xl md:text-6xl drop-shadow-[15px_15px_5px_rgba(79,153,153,1)] underline decoration-dashed decoration-8 decoration-teal-500 text-white my-auto">
               Life Reversal
             </h1>
           </div>
-          <div className="h-3/5 w-full flex justify-center">
+          <div className="h-1/2 sm:h-3/5 w-full flex justify-center">
             {status === "authenticated" ? (
-              <p className="text3xl lg:text-2xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
+              <p className="w-2/3 text-lg lg:text-2xl z-30 text-white my-auto drop-shadow-[0px_4px_2px_rgba(0,0,0,1)]">
                 失敗を経験している人へ、これからの人生設計の手助けをします
               </p>
             ) : (

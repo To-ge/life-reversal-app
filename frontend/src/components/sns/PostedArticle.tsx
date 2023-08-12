@@ -17,14 +17,14 @@ const PostedArticle = (props: UserAndArticle) => {
         />
       </div>
       <div className="basis-5/6">
-        <p className="text-sm">
+        <p className="text-xs sm:text-sm">
           {new Date(article?.updated_at).toLocaleString("ja-JP", {
             timeZone: "Asia/Tokyo",
             dateStyle: "short",
           })}
         </p>
-        <p className="text-md text-teal-500 mb-3">By_{user?.name}</p>
-        <p className="text-sm">{article.text}</p>
+        <p className="text-sm sm:text-md text-teal-500 mb-3">By_{user?.name}</p>
+        <p className="text-xs sm:text-sm">{article.text}</p>
       </div>
     </div>
   );

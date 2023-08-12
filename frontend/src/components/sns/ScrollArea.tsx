@@ -49,7 +49,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
   return (
     <div className="flex flex-col md:flex-row w-screen">
       <div className="md:w-1/4 md:p-5 md:h-screen">
-        <div className="flex justify-center md:flex-col lg:flex-row">
+        <div className="flex justify-center md:flex-col lg:flex-row text-sm">
           <div
             onClick={(e) => filterArticle(e.currentTarget.innerText)}
             className="basis-1/2 text-center bg-gray-300 p-5 cursor-pointer font-bold hover:bg-teal-400"
@@ -63,7 +63,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
             All Articles
           </div>
         </div>
-        {!(breakpoint === "sm") && (
+        {!["xs", "sm"].includes(breakpoint) && (
           <div className="h-2/3 flex items-center justify-center">
             {panel && (
               <div className="w-4/5 bg-white rounded-md p-5 space-y-5 shadow-lg shadow-black">
@@ -74,7 +74,7 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
                   height={70}
                   alt="Picture of the author"
                 />
-                <p>
+                <p className="text-sm">
                   登録日:
                   {panelUser &&
                     new Date(panelUser?.created_at).toLocaleString("ja-JP", {
@@ -82,10 +82,10 @@ const ScrollArea = ({ articles, users }: UsersAndArticles) => {
                       dateStyle: "short",
                     })}
                 </p>
-                <p className="text-xl text-orange-400 mb-3">
+                <p className="text-md text-orange-400 mb-3">
                   名前: {panelUser?.name}
                 </p>
-                <p className="text-lg">投稿数: {postVol}</p>
+                <p className="text-md">投稿数: {postVol}</p>
               </div>
             )}
           </div>
