@@ -11,18 +11,18 @@ const Login = (): React.ReactElement | null => {
     return (
       <div>
         <button
-          className="flex justify-center items-center bg-white shadow-lg shadow-slate-300 px-7 py-3 rounded-md space-x-5"
+          className="flex justify-center items-center bg-white shadow-lg shadow-slate-300 px-4 py-2 rounded-md space-x-5"
           onClick={() =>
             signIn("google", { prompt: "login", callbackUrl: "/" })
           }
         >
           <Image
             src="https://authjs.dev/img/providers/google.svg"
-            height={30}
-            width={30}
+            height={20}
+            width={20}
             alt=""
           />
-          <div className="font-semibold text-lg">Googleでログイン</div>
+          <div className="font-semibold text-sm">Googleでログイン</div>
         </button>
       </div>
     );

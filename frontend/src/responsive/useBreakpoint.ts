@@ -13,8 +13,10 @@ const useBreakpoint = () => {
         setBreakpoint("lg");
       } else if (screenWidth >= 768) {
         setBreakpoint("md");
-      } else {
+      } else if (screenWidth >= 500) {
         setBreakpoint("sm");
+      } else {
+        setBreakpoint("xs");
       }
     };
 

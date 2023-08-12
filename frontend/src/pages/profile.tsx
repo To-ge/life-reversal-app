@@ -57,22 +57,22 @@ const Profile = () => {
   return (
     <div className="w-screen h-screen fixed bg-yellow-100">
       <TopBar />
-      <div className=" h-full w-full">
-        <div className="bg-white h-3/4 rounded-2xl my-10 mx-20 p-12 shadow-xl flex flex-col">
-          <div className="h-1/5 flex justify-around items-center mb-5 p-5">
+      <div className="h-full w-full">
+        <div className="bg-white h-3/4 w-5/6 rounded-2xl my-10 mx-auto p-3 sm:p-12 shadow-xl flex flex-col">
+          <div className="h-1/5 flex justify-around items-center sm:mb-5 sm:p-5">
             <div></div>
             <Image
               src={session?.user?.image || DEFAULT_IMAGE_IMG}
               className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover"
-              width={60}
-              height={60}
+              width={50}
+              height={50}
               alt="Picture of the author"
             />
             <div>
-              <p className="text-md text-blue-400 font-bold">
+              <p className="text-sm sm:text-md text-blue-400 font-bold">
                 Name : {session?.user?.name}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500 truncate">
                 Email : {session?.user?.email}
               </p>
             </div>
@@ -98,17 +98,17 @@ const Profile = () => {
                         height={40}
                         alt="Picture of the author"
                       />
-                      <div>
-                        <p className="text-md text-teal-500 font-bold">
+                      <div className="w-1/2">
+                        <p className="text-xs sm:text-md text-teal-500 font-bold truncate">
                           Name : {followingUser?.name}
                         </p>
-                        <p className="textsm text-gray-500">
+                        <p className="text-xs sm:text-sm text-gray-500 truncate">
                           Email : {followingUser?.email}
                         </p>
                       </div>
                       <div>
                         <button
-                          className="bg-red-300 rounded-lg px-4 py-2 text-sm"
+                          className="bg-red-300 rounded-lg px-2 sm:px-4 py-1 sm:py-2 text-xs"
                           onClick={() => deleteFollow(followingUser)}
                         >
                           解除

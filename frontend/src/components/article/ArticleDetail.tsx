@@ -60,43 +60,47 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-b from-orange-300 to-red-300 flex justify-center">
+    <div className="h-full w-full bg-gradient-to-b from-orange-300 to-red-300 flex flex-col sm:flex-row justify-center">
       {!editing ? (
-        <div className="w-1/3">
-          <div className="bg-white rounded-2xl m-3 p-5 xl:m-10 xl:p-12 shadow-xl flex flex-col">
-            <div className="h-1/3 flex flex-wrap lg:flex-row justify-around items-center mb-5 space-y-2">
-              <Image
-                src={user?.image || DEFAULT_IMAGE_IMG}
-                className="block mx-auto rounded-full sm:mx-0 sm:shrink-0 object-cover basis-full lg:basis-1/2"
-                width={80}
-                height={80}
-                alt="Picture of the author"
-              />
-              <div className="basis-full lg:basis-1/2 text-center">
-                <p className="text-lg text-teal-500 font-bold">
-                  From : {user?.name}
-                </p>
-                <p className="text-md text-gray-500">{user?.email}</p>
+        <div className="w-full sm:w-1/3">
+          <div className="bg-white rounded-2xl m-3 p-5 xl:m-10 xl:p-8 shadow-xl flex flex-col">
+            <div className="h-1/3 flex flex-col justify-around items-center mb-5 space-y-2">
+              <div className="flex items-center justify-start w-full basis-full space-x-8">
+                <Image
+                  src={user?.image || DEFAULT_IMAGE_IMG}
+                  className="rounded-full object-cover"
+                  width={60}
+                  height={60}
+                  alt="Picture of the author"
+                />
+                <div className="flex flex-col space-y-3">
+                  <div className="text-center">
+                    <p className="text-sm text-teal-500 font-bold">
+                      From : {user?.name}
+                    </p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+                  <div className="flex justify-center">
+                    <button
+                      className="text-xs bg-black text-white rounded-full px-4 py-1 sm:px-5 sm:py-2 hover:text-gray-400"
+                      onClick={(e) => clickButton(e.currentTarget.innerText)}
+                    >
+                      {user.email !== session?.user?.email ? "Follow" : "Edit"}
+                    </button>
+                    {user.email === session?.user?.email && (
+                      <button
+                        className="text-xs bg-red-500 text-white rounded-full px-2 py-1 sm:px-3 sm:py-2 ml-3 hover:text-gray-400"
+                        onClick={deleteArticle}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="flex basis-full justify-center">
-                <button
-                  className="bg-black text-white rounded-full px-5 py-2 hover:text-gray-400"
-                  onClick={(e) => clickButton(e.currentTarget.innerText)}
-                >
-                  {user.email !== session?.user?.email ? "Follow" : "Edit"}
-                </button>
-                {user.email === session?.user?.email && (
-                  <button
-                    className="bg-red-500 text-white rounded-full px-3 py-2 ml-3 hover:text-gray-400"
-                    onClick={deleteArticle}
-                  >
-                    Delete
-                  </button>
-                )}
+              <div className="h-2/3 min-w-full">
+                <p className="text-xs sm:text-sm">{article?.text}</p>
               </div>
-            </div>
-            <div className="h-2/3">
-              <p className="">{article?.text}</p>
             </div>
           </div>
           <ToastContainer />
@@ -112,17 +116,17 @@ const ArticleDetail = (props: { articleInfo: UserAndArticleAndCards }) => {
         />
       )}
 
-      <ul className="w-2/3 flex flex-col items-center p-5 space-y-7 overflow-y-auto mb-20">
+      <ul className="h-full w-full sm:w-2/3 flex flex-col items-center p-5 space-y-7 overflow-y-auto mb-24">
         {cardInfo &&
           cardInfo.map((card: Card) => (
             <li key={card.id} className="w-4/5 shadow-xl">
-              <p className="w-20 text-lg ml-8 bg-white flex justify-center rounded-t-lg">
+              <p className="w-16 text-xs sm:text-sm font-bold ml-8 bg-white flex justify-center rounded-t-lg">
                 {`No.${card.id}`}
               </p>
               <textarea
                 value={card.text}
                 onChange={(e) => handleChange(card.id, e.target.value, e)}
-                className="p-7 text-xl w-full focus:outline-none rounded-lg"
+                className="p-5 sm:p-7 text-xs sm:text-sm w-full focus:outline-none rounded-lg"
                 placeholder="when, where, how"
                 readOnly={user.email !== session?.user?.email && !editing}
                 rows={1}

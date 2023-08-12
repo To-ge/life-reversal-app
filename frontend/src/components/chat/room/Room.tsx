@@ -7,6 +7,7 @@ import { ActionCableContext } from "provider/ActionCableProvider";
 import { ToastContainer, toast } from "react-toastify";
 import { scrollDown } from "assets/scrollDown";
 import { UserProvider } from "types/props.type";
+import useBreakpoint from "responsive/useBreakpoint";
 
 type RoomProps = {
   color: string;
@@ -24,6 +25,8 @@ export default function Room(props: RoomProps) {
   const [chatPartner, setChatPartner] = useState<User | null>(null);
   const { partner } = useContext<UserProvider>(UserContext);
   const chatContainer = useRef(null);
+  const breakpoint = useBreakpoint();
+  const mobileSize = ["xs"].includes(breakpoint);
 
   useEffect(() => {
     const chatPartnerData = localStorage.getItem("chat_partner");
@@ -103,7 +106,7 @@ export default function Room(props: RoomProps) {
   // }, [chatPartner, cable]);
 
   return (
-    <div className={`${color} h-screen flex flex-col items-center pb-36`}>
+    <div className={`${color} h-screen flex flex-col items-center pb-28`}>
       <h1 className="h-12 flex justify-center items-center text-white text-md">
         To : {chatPartner?.name}
       </h1>
@@ -129,7 +132,7 @@ export default function Room(props: RoomProps) {
                     message.user_id !== chatPartner?.id
                       ? "bg-lime-400"
                       : "bg-slate-300"
-                  } rounded-2xl w-fit px-5 py-3 text-sm font-medium mx-12 my-1 shadow-md shadow-gray-300`}
+                  } rounded-2xl w-fit px-5 py-3 text-xs sm:text-sm font-medium mx-12 my-1 shadow-md shadow-gray-300`}
                 >
                   <p>{message.content}</p>
                 </div>
@@ -138,16 +141,20 @@ export default function Room(props: RoomProps) {
         </div>
       </div>
 
-      <div className="w-3/5 flex bottom-8 mx-auto">
+      <div
+        className={`flex ${
+          mobileSize ? "pb-8 w-5/6 pt-3" : "w-3/5 pt-5"
+        } mx-auto`}
+      >
         <input
           type="text"
-          className="flex-grow px-5 py-3 rounded-l-md border border-gray-300 focus:outline-none focus:border-teal-500 text-md text-sm"
+          className="flex-grow px-3 py-2 sm:px-5 sm:py-3 rounded-l-md border border-gray-300 focus:outline-none focus:border-teal-500 text-xs sm:text-md"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="コメントを入力"
         />
         <button
-          className="bg-teal-500 hover:bg-teal-600 text-white rounded-r-md px-4 py-2"
+          className="bg-teal-500 hover:bg-teal-600 text-white rounded-r-md px-3 py-2 text-sm sm:text-base"
           onClick={handleSendMessage}
         >
           送信

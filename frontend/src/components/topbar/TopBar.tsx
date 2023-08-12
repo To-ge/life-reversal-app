@@ -22,11 +22,11 @@ const TopBar = () => {
 
   const imageUrl = session?.user?.image || DEFAULT_IMAGE_IMG;
   return (
-    <div className="bg-teal-600 flex items-center z-50 h-20">
-      <div className="text-xl font-bold w-1/5 flex justify-center items-center bg-gradient-to-b from-gray-200 to-gray-500 cursor-pointer h-full px-2">
+    <div className="bg-teal-600 flex items-center z-50 h-16 sm:h-20">
+      <div className="text-sm sm:text-xl font-bold w-1/5 flex justify-center items-center bg-gradient-to-b from-gray-200 to-gray-500 cursor-pointer h-full px-2">
         <Link href="/">Life Reversal</Link>
       </div>
-      <ul className="flex w-2/5 justify-center items-center space-x-2 md:space-x-10  font-bold text-md cursor-pointer">
+      <ul className="flex w-2/5 justify-center items-center space-x-2 md:space-x-10  font-bold text-xs md:text-md cursor-pointer mx-auto">
         <Link href="/search">
           <li className="hover:bg-teal-700 px-3 py-2 rounded-md">Search</li>
         </Link>
@@ -39,7 +39,7 @@ const TopBar = () => {
       </ul>
       {session ? (
         <>
-          <div className="py-3 px-8 mx-auto xl:bg-white rounded-xl xl:shadow-lg flex overflow-hidden">
+          <div className="mx-auto sm:py-3 sm:px-8 mx-auto xl:bg-white rounded-xl xl:shadow-lg flex overflow-hidden">
             <Link href={"/profile"}>
               <Image
                 src={imageUrl}
@@ -49,7 +49,7 @@ const TopBar = () => {
                 alt="Picture of the author"
               />
             </Link>
-            {!["sm", "md", "lg"].includes(breakpoint) && (
+            {!["xs", "sm", "md", "lg"].includes(breakpoint) && (
               <div className="px-3">
                 <div className="text-yellow-600 font-bold">
                   {session?.user?.name}
@@ -63,7 +63,7 @@ const TopBar = () => {
           <Logout />
         </>
       ) : (
-        !(breakpoint === "sm") && <Login />
+        !["xs", "sm"].includes(breakpoint) && <Login />
       )}
     </div>
   );

@@ -24,8 +24,9 @@ const SideBar = (props: SideBarProps) => {
   const { data: session } = useSession<boolean>();
   const [followingUsers, setFollowingUsers] = useState<User[] | []>([]);
   const { displayChat } = useContext<UserProvider>(UserContext);
-  const imageSize = useImageSize(60, 60);
+  const imageSize = useImageSize(80, 80);
   const breakpoint = useBreakpoint();
+  const mobileSize = ["xs", "sm"].includes(breakpoint);
 
   useEffect(() => {
     const getFollowingUser = async () => {
@@ -46,7 +47,9 @@ const SideBar = (props: SideBarProps) => {
   }, []);
 
   return (
-    <aside className={`${width} ${color} h-screen overflow-hidden`}>
+    <aside
+      className={`${width} ${color} h-screen overflow-hidden absolute md:static`}
+    >
       <div className="font-black text-center my-4 text-sm">{title}</div>
       <ul className="font-medium overflow-y-auto h-full flex-grow">
         {followingUsers.length >= 1 &&
@@ -57,19 +60,21 @@ const SideBar = (props: SideBarProps) => {
                 className="h-20 flex rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 justify-center border-solid border-gray-400 border-2 cursor-pointer"
                 onClick={() => displayChat && displayChat(followingUser)}
               >
-                <div className="flex items-center p-2 text-gray-900  w-4/5 overflow-hidden">
+                <div className="flex items-center p-2 text-gray-900 w-5/6 overflow-hidden">
                   <Image
                     src={followingUser?.image || DEFAULT_IMAGE_IMG}
                     alt=""
-                    width={imageSize.width}
-                    height={imageSize.height}
-                    className="mr-3 rounded-md"
+                    width={mobileSize ? 50 : imageSize.width}
+                    height={mobileSize ? 50 : imageSize.height}
+                    className="w-1/5 mx-auto rounded-full"
                   />
-                  <h2 className="text-lg w-3/5 truncate mx-2">
+                  <h2 className="flex justify-center text-lg w-3/5 truncate mx-auto">
                     {followingUser?.name}
                   </h2>
-                  {!["sm", "md", "lg"].includes(breakpoint) && (
-                    <p className="text-sm truncate">{followingUser.email}</p>
+                  {!["xs"].includes(breakpoint) && (
+                    <p className="text-sm mx-auto truncate">
+                      {followingUser.email}
+                    </p>
                   )}
                 </div>
               </li>

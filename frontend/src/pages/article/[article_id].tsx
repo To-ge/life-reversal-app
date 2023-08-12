@@ -20,7 +20,7 @@ const Article = ({ data }: { data: UserAndArticleAndCards }) => {
   return (
     <div className="h-screen w-screen fixed">
       <TopBar />
-      <div className="h-full flex">
+      <div className="h-full">
         <ArticleDetail articleInfo={data} />
       </div>
     </div>
